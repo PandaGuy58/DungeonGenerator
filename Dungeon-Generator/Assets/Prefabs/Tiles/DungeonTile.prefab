@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 44316140207460818}
   - component: {fileID: -4716054119713553218}
   m_Layer: 0
-  m_Name: Chamber
+  m_Name: DungeonTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 723044338941b0648a05fa5ebf9e65c8, type: 2}
+  - {fileID: 2100000, guid: 9d0e04c4c7e7ea241b96f2112df4b1b0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

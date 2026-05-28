@@ -11,24 +11,38 @@ public class InputController : MonoBehaviour
     [SerializeField] private Vector3 currentRaycastCoordinate;
     GameObject raycastTile;
 
-    bool raycastSuccess = false;
+    //bool raycastSuccess = false;
     [SerializeField] private Vector3 initialTile;
     [SerializeField] private Vector3 currentTargetTile;
     [SerializeField] private Vector3 previousTargetTile;
 
     List<PoolChild> currentlySelected = new List<PoolChild>();
 
+    int currentSelectedTilePool = 0;
+    [SerializeField] List<ObjectPoolMasterclass> tilePools;
+
+
     private void Awake()
     {
         raycastTile = Instantiate(raycastPrferab, Vector3.zero,quaternion.identity);
         raycastTile.SetActive(false);
+
+        string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
+        UIManager.instance.UpdateText(currentPrefabName);
     }
 
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
+            currentSelectedTilePool++;
+            if(currentSelectedTilePool > tilePools.Count-1)
+            {
+                currentSelectedTilePool = 0;
+            }
 
+            string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
+            UIManager.instance.UpdateText(currentPrefabName);
         }
 
         ExecuteRaycast();
@@ -43,6 +57,7 @@ public class InputController : MonoBehaviour
         }
         else if(Input.GetMouseButtonUp(0))
         {
+            PlaceNewTiles();
             raycastTile.SetActive(true);
             currentlySelected.Clear();
         }
@@ -58,6 +73,18 @@ public class InputController : MonoBehaviour
                 raycastTile.SetActive(true);
                 raycastTile.transform.position = currentRaycastCoordinate;
             }
+        }
+    }
+
+    void PlaceNewTiles()
+    {
+        for(int i = 0; i < currentlySelected.Count; i++)
+        {
+            PoolChild poolChild = tilePools[currentSelectedTilePool].RequestObject();
+            Vector3 targetPosition = currentlySelected[i].transform.position;
+            poolChild.transform.position = targetPosition;
+            ObjectArray.instance.AssignObjectToArray(poolChild, (int)targetPosition.x, (int)targetPosition.z);
+            currentlySelected[i].ReturnChildToPool();
         }
     }
 
@@ -93,18 +120,20 @@ public class InputController : MonoBehaviour
             return;
 
         raycastTile.SetActive(false);
-        raycastSuccess = true;
         initialTile = currentRaycastCoordinate;
 
-        PoolChild poolChild = ChamberPool.instance.RequestObject();
-        poolChild.transform.position = new Vector3(initialTile.x, 0, initialTile.z);
+        /*
+        for (int i = 0; i < currentlySelected.Count; i++)
+        {
+            Vector3 targetLocation = currentlySelected[i].transform.position;
+            PoolChild poolChild = tilePools[currentSelectedTilePool].RequestObject();
+            poolChild.transform.position = targetLocation;
+        }
+        */
     }
 
     void MouseButton()
     {
-        if (!raycastSuccess)
-            return;
-
         currentTargetTile = currentRaycastCoordinate;
 
         if (currentTargetTile == previousTargetTile)
@@ -113,11 +142,17 @@ public class InputController : MonoBehaviour
         previousTargetTile = currentTargetTile;
         ReturnCurrentSelectedToPool();
 
-        if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        {
+            PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
+            poolChild.transform.position = new Vector3(initialTile.x, 0, currentTargetTile.z);
+            currentlySelected.Add(poolChild);
+        }
+        else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x > currentTargetTile.x -1; x--)
             {
-                PoolChild poolChild = ChamberPool.instance.RequestObject();
+                PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                 poolChild.transform.position = new Vector3(x, 0, currentTargetTile.z);
                 currentlySelected.Add(poolChild);
             }
@@ -126,7 +161,7 @@ public class InputController : MonoBehaviour
         {
             for (int x = (int)initialTile.x; x < currentTargetTile.x +1; x++)
             {
-                PoolChild poolChild = ChamberPool.instance.RequestObject();
+                PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                 poolChild.transform.position = new Vector3(x, 0, currentTargetTile.z);
                 currentlySelected.Add(poolChild);
             }
@@ -135,7 +170,7 @@ public class InputController : MonoBehaviour
         {
             for (int z = (int)initialTile.z; z < currentTargetTile.z +1; z++)
             {
-                PoolChild poolChild = ChamberPool.instance.RequestObject();
+                PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                 poolChild.transform.position = new Vector3(initialTile.x, 0, z);
                 currentlySelected.Add(poolChild);
             }
@@ -144,7 +179,7 @@ public class InputController : MonoBehaviour
         {
             for (int z = (int)initialTile.z; z > currentTargetTile.z -1; z--)
             {
-                PoolChild poolChild = ChamberPool.instance.RequestObject();
+                PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                 poolChild.transform.position = new Vector3(initialTile.x, 0, z);
                 currentlySelected.Add(poolChild);
             }
@@ -155,7 +190,7 @@ public class InputController : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z +1; z++)
                 {
-                    PoolChild poolChild = ChamberPool.instance.RequestObject();
+                    PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                     poolChild.transform.position = new Vector3(x, 0, z);
                     currentlySelected.Add(poolChild);
                 }
@@ -167,7 +202,7 @@ public class InputController : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
-                    PoolChild poolChild = ChamberPool.instance.RequestObject();
+                    PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                     poolChild.transform.position = new Vector3(x, 0, z);
                     currentlySelected.Add(poolChild);
                 }
@@ -179,7 +214,7 @@ public class InputController : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    PoolChild poolChild = ChamberPool.instance.RequestObject();
+                    PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                     poolChild.transform.position = new Vector3(x, 0, z);
                     currentlySelected.Add(poolChild);
                 }
@@ -191,13 +226,15 @@ public class InputController : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    PoolChild poolChild = ChamberPool.instance.RequestObject();
+                    PoolChild poolChild = TemporaryTilePool.instance.RequestObject();
                     poolChild.transform.position = new Vector3(x, 0, z);
                     currentlySelected.Add(poolChild);
                 }
             }
         }
     }
+
+
 
 }
         

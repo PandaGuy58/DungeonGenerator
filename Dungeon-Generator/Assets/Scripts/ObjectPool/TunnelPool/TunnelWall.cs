@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class TunnelPool : ObjectPoolMasterclass
+public class TunnelWall : ObjectPoolMasterclass
 {
-    public static TunnelPool instance;
+    public static TunnelWall instance;
 
     private void Awake()
     {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class ObjectPoolMasterclass : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class ObjectPoolMasterclass : MonoBehaviour
         {
             PoolChild poolChild = Instantiate(prefab, Vector3.zero, Quaternion.identity).GetComponent<PoolChild>();
             poolChild.Initialise(this);
+            poolChild.transform.parent = transform;
             return poolChild;
         }
 
@@ -25,6 +27,11 @@ public class ObjectPoolMasterclass : MonoBehaviour
     {
         availableInstances.Add(targetObject);
         targetObject.gameObject.SetActive(false);
+    }
+
+    public string GetPrefabName()
+    {
+        return prefab.name;
     }
 
 }
