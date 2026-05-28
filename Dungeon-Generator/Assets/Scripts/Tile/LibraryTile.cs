@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LibraryTile : TileMasterClass
 {
-    void Awake()
+    private void Awake()
     {
         wallPool = LibraryWall.instance;
         majorColumnPool = LibraryMajorColumn.instance;

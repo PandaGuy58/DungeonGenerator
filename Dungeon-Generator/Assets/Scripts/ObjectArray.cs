@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectArray : MonoBehaviour
@@ -6,6 +8,8 @@ public class ObjectArray : MonoBehaviour
     public static ObjectArray instance;
 
     PoolChild[,] poolChildArray;
+
+    List<PoolChild> poolChildList = new List<PoolChild>();
 
     private void Awake()
     {
@@ -29,30 +33,43 @@ public class ObjectArray : MonoBehaviour
         poolChildArray[x, y].ReturnChildToPool();
         poolChildArray[x, y] = null;
     }
-}
 
-    /*
-    public void DisplayArray()
+    public void GenerateContent()
     {
-        for (int y = 0; y < 25; y++)
-        {
-            string finalString = "";
-            for (int x = 0; x < 25; x++)
-            {
-                if (poolChildArray[x, y] == null)
-                {
-                    finalString += "NULL";
-                }
-                else
-                {
-                    finalString += poolChildArray[x, y].ToString();
-                }
+        ReturnContentToPools();
+        GenerateWalls();
+        GenerateWalls();
+        GenerateMajorColumns();
+        GenerateMinorColumns();
+        GenerateDoors();
+    }
 
-                finalString += ",";
-            }
-            Debug.Log(finalString);
+    void ReturnContentToPools()
+    {
+        for(int i = 0; i < poolChildList.Count; i++)
+        {
+            poolChildList[i].ReturnChildToPool();
         }
     }
 
+    void GenerateWalls()
+    {
+
+    }
+
+    void GenerateMajorColumns()
+    {
+
+    }
+
+    void GenerateMinorColumns()
+    {
+
+    }
+
+    void GenerateDoors()
+    {
+
+    }
 }
-    */
+
