@@ -6,5 +6,16 @@ public class TileMasterClass : MonoBehaviour
     [HideInInspector] public ObjectPoolMasterclass wallPool;
     [HideInInspector] public ObjectPoolMasterclass majorColumnPool;
     [HideInInspector] public ObjectPoolMasterclass minorColumnPool;
-    [HideInInspector] public ObjectPoolMasterclass doorPool;  
+    [HideInInspector] public ObjectPoolMasterclass doorPool;
+
+    [HideInInspector] public PoolChild poolChildReference;
+    public void ReturnToPool()
+    {
+        poolChildReference.ReturnChildToPool();
+    }
+
+    public PoolChild RequestWall()
+    {
+        return wallPool.RequestObject();
+    }
 }

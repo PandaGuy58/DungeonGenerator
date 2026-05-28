@@ -59,7 +59,7 @@ public class InputController : MonoBehaviour
         {
             PlaceNewTiles();
             raycastTile.SetActive(true);
-            currentlySelected.Clear();
+            ObjectArray.instance.GenerateContent();
         }
         else
         {
@@ -83,9 +83,12 @@ public class InputController : MonoBehaviour
             PoolChild poolChild = tilePools[currentSelectedTilePool].RequestObject();
             Vector3 targetPosition = currentlySelected[i].transform.position;
             poolChild.transform.position = targetPosition;
-            ObjectArray.instance.AssignObjectToArray(poolChild, (int)targetPosition.x, (int)targetPosition.z);
+            TileMasterClass tile = poolChild.GetComponent<TileMasterClass>();
+            ObjectArray.instance.AssignObjectToArray(tile, (int)targetPosition.x, (int)targetPosition.z);
             currentlySelected[i].ReturnChildToPool();
         }
+
+        currentlySelected.Clear();
     }
 
     void ExecuteRaycast()
@@ -233,9 +236,6 @@ public class InputController : MonoBehaviour
             }
         }
     }
-
-
-
 }
         
 

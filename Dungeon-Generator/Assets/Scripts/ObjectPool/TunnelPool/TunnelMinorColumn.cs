@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class TunnelMinorColumn : ObjectPoolMasterclass
 {
     public static TunnelMinorColumn instance;
