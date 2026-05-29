@@ -7,18 +7,19 @@ public class ObjectArray : MonoBehaviour
     public static ObjectArray instance;
 
     TileMasterClass[,]tilesArray;
-
     List<PoolChild> poolChildList = new List<PoolChild>();
 
     private void Awake()
     {
         instance = this;
-        tilesArray = new TileMasterClass[51, 51];
+        tilesArray = new TileMasterClass[53, 53];
     }
 
     public void AssignObjectToArray(TileMasterClass child, int x, int y)
     {
-        Debug.Log(x + "," + y);
+        x += 1;
+        y += 1;
+
         if (tilesArray[x, y] != null)
         {
             Debug.Log("Location already occupied" + Time.time);
@@ -29,6 +30,9 @@ public class ObjectArray : MonoBehaviour
 
     public void ReleaseObjectFromArray(int x, int y)
     {
+        x += 1;
+        y += 1;
+
         tilesArray[x, y].ReturnToPool();
         tilesArray[x, y] = null;
     }
@@ -48,6 +52,8 @@ public class ObjectArray : MonoBehaviour
         {
             poolChildList[i].ReturnChildToPool();
         }
+
+        poolChildList.Clear();
     }
 
     void GenerateWalls()
@@ -74,6 +80,7 @@ public class ObjectArray : MonoBehaviour
 
         Vector3 calculate = tilesArray[x, y].transform.position;
         calculate.z += 0.5f;
+        calculate.y += 0.5f;
 
         PoolChild poolChild = tilesArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
@@ -91,6 +98,7 @@ public class ObjectArray : MonoBehaviour
 
         Vector3 calculate = tilesArray[x, y].transform.position;
         calculate.z -= 0.5f;
+        calculate.y += 0.5f;
 
         PoolChild poolChild = tilesArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
@@ -108,6 +116,7 @@ public class ObjectArray : MonoBehaviour
 
         Vector3 calculate = tilesArray[x, y].transform.position;
         calculate.x += 0.5f;
+        calculate.y += 0.5f;
 
         PoolChild poolChild = tilesArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
@@ -125,6 +134,7 @@ public class ObjectArray : MonoBehaviour
 
         Vector3 calculate = tilesArray[x, y].transform.position;
         calculate.x -= 0.5f;
+        calculate.y += 0.5f;
 
         PoolChild poolChild = tilesArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
