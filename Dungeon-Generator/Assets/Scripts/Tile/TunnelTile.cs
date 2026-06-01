@@ -1,5 +1,5 @@
 
-public class Tunnel : TileMasterClass
+public class TunnelTile : TileMasterClass
 {
     private void Awake()
     {

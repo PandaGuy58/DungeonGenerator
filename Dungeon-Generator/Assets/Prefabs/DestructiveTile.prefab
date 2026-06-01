@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 8020727473303690932}
   - component: {fileID: 7653494875585678503}
   - component: {fileID: 44316140207460818}
-  - component: {fileID: 1652857702555510132}
+  - component: {fileID: -891273376822745174}
+  - component: {fileID: 7008381042108770293}
   m_Layer: 0
-  m_Name: Temporary
+  m_Name: DestructiveTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3cd47e9c7f0a97b47acac487d6794e81, type: 2}
+  - {fileID: 2100000, guid: a2e847b32382e1c428d0a6e229f88282, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -113,7 +114,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1652857702555510132
+--- !u!114 &-891273376822745174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6761676736499261270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 092cfb64051b53d4fac10e962adf1294, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestructiveTile
+  passive: 0
+  wallPool: {fileID: 0}
+  majorColumnPool: {fileID: 0}
+  minorColumnPool: {fileID: 0}
+  doorPool: {fileID: 0}
+  poolChildReference: {fileID: 0}
+--- !u!114 &7008381042108770293
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

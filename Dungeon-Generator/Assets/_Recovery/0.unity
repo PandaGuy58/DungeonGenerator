@@ -635,51 +635,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1788896377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &422657698
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 422657699}
-  - component: {fileID: 422657700}
-  m_Layer: 0
-  m_Name: DestructiveTilePool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &422657699
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 422657698}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1523299199}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &422657700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 422657698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6fd8101d26593f49a79449cc58c62df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectPoolMasterclass
-  prefab: {fileID: 6761676736499261270, guid: 1f2c09a5844c80e46833b76e2a86f995, type: 3}
 --- !u!1 &568228616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1067,7 +1022,7 @@ GameObject:
   - component: {fileID: 795661668}
   - component: {fileID: 795661669}
   m_Layer: 0
-  m_Name: TunnelTilePool
+  m_Name: TunnelPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1239,6 +1194,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 750590079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &947010646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 947010647}
+  - component: {fileID: 947010648}
+  m_Layer: 0
+  m_Name: TemporaryTilePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &947010647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947010646}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1523299199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &947010648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947010646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c066ebfcbba833b43b615e83b6625e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TemporaryTilePool
+  prefab: {fileID: 6761676736499261270, guid: 1f2c09a5844c80e46833b76e2a86f995, type: 3}
 --- !u!1 &1101388443
 GameObject:
   m_ObjectHideFlags: 0
@@ -1418,50 +1418,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 727372019}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1240517974
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1240517976}
-  - component: {fileID: 1240517975}
-  m_Layer: 0
-  m_Name: GenerationManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1240517975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1240517974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 480c7030beff81b40ac170d493f46272, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GenerationManager
---- !u!4 &1240517976
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1240517974}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.29402, y: 0, z: 10.03269}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1245616170
 GameObject:
@@ -1789,11 +1745,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 947010647}
   - {fileID: 1101388444}
   - {fileID: 1518106175}
   - {fileID: 1245616171}
   - {fileID: 795661668}
-  - {fileID: 422657699}
   m_Father: {fileID: 1715619968}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1531792887
@@ -1915,6 +1871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cfca836b06b5941807075eb34a03e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputController
+  raycastPrefab: {fileID: 6761676736499261270, guid: 29010f746a98b5a42aea4c5750180050, type: 3}
   raycastMask:
     serializedVersion: 2
     m_Bits: 64
@@ -1923,7 +1880,6 @@ MonoBehaviour:
   - {fileID: 1518106176}
   - {fileID: 1245616172}
   - {fileID: 795661669}
-  - {fileID: 422657700}
 --- !u!4 &1566500110
 Transform:
   m_ObjectHideFlags: 0
@@ -2264,10 +2220,9 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
+  - {fileID: 1566500110}
   - {fileID: 143578002}
+  - {fileID: 903015702}
   - {fileID: 1715619968}
   - {fileID: 1397632860}
   - {fileID: 746148101}
-  - {fileID: 1566500110}
-  - {fileID: 903015702}
-  - {fileID: 1240517976}
