@@ -8,19 +8,19 @@ public class InputController : MonoBehaviour
     // + place the selected tiles + instruct object array script to generate content
 
     // placed at raycast tile
-   // [SerializeField] GameObject raycastPrefab;
-    PoolChild raycastTile;
+    // [SerializeField] GameObject raycastPrefab;
+    //  PoolChild raycastTile;
 
     // layer to raycast
     [SerializeField] LayerMask raycastMask;
 
     // core values to determine where to place tiles
     Vector3 initialRaycastPos;
-    Vector3 currentRaycastPos;
+    [SerializeField] Vector3 currentRaycastPos;
     Vector3 previousRaycastPos;
 
     // temporary tiles stored in a list
-   // List<PoolChild> currentlySelected = new List<PoolChild>();
+    // List<PoolChild> currentlySelected = new List<PoolChild>();
 
     // for player to switch between different tyles
     int currentSelectedTilePool = 0;
@@ -28,7 +28,7 @@ public class InputController : MonoBehaviour
 
     private void Awake()
     {
-        raycastTile = tilePools[currentSelectedTilePool].RequestObject();
+        //  raycastTile = tilePools[currentSelectedTilePool].RequestObject();
         string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
         UIManager.instance.UpdateText(currentPrefabName);
     }
@@ -41,6 +41,24 @@ public class InputController : MonoBehaviour
         {
             ActionSwitch();
         }
+        else if(Input.GetMouseButtonDown(0))
+        {
+            MouseButtonDown();
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            MouseButton();
+        }
+        else if(Input.GetMouseButtonUp(0))
+        {
+            MouseButtonUp();
+        }
+        else
+        {
+            MouseInactive();
+        }
+
+        /*
         else if (Input.GetMouseButtonDown(0))
         {
             MouseButtonDown();
@@ -57,6 +75,7 @@ public class InputController : MonoBehaviour
         {
             MouseInactive();
         }
+        */
     }
 
     void ExecuteRaycast()
@@ -65,8 +84,8 @@ public class InputController : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, raycastMask))
         {
             Vector3 newVector = new Vector3(Mathf.RoundToInt(hit.point.x), 0, Mathf.RoundToInt(hit.point.z));
-            newVector.x = Mathf.Clamp(newVector.x, 0, 50);
-            newVector.z = Mathf.Clamp(newVector.z, 0, 50);
+            newVector.x = Mathf.Clamp(newVector.x, 0, 49);
+            newVector.z = Mathf.Clamp(newVector.z, 0, 49);
             currentRaycastPos = newVector;
         }
         else
@@ -77,7 +96,6 @@ public class InputController : MonoBehaviour
 
     void ActionSwitch()
     {
-        raycastTile.ReturnChildToPool();
         currentSelectedTilePool++;
         if (currentSelectedTilePool > tilePools.Count - 1)
         {
@@ -86,12 +104,10 @@ public class InputController : MonoBehaviour
 
         string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
         UIManager.instance.UpdateText(currentPrefabName);
-        raycastTile = tilePools[currentSelectedTilePool].RequestObject();
     }
 
     void MouseButtonDown()
     {
-        raycastTile.gameObject.SetActive(false);
         initialRaycastPos = currentRaycastPos;
     }
 
@@ -100,8 +116,7 @@ public class InputController : MonoBehaviour
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        bool destroy = currentSelectedTilePool == tilePools.Count-1;
-        ObjectArray.instance.GenerateTemporaryArray(destroy, initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        ObjectArray.instance.GenerateTemporaryArray(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
 
         previousRaycastPos = currentRaycastPos;
         GenerationManager.instance.Generate();
@@ -110,12 +125,37 @@ public class InputController : MonoBehaviour
 
     void MouseButtonUp()
     {
-        raycastTile.gameObject.SetActive(true);
-        ObjectArray.instance.FinaliseArray();
+        ObjectArray.instance.FinalisePoolArray();
     }
 
     void MouseInactive()
     {
+        if (currentRaycastPos.x == -1)
+            return;
+
+        if (currentRaycastPos == previousRaycastPos)
+            return;
+
+        previousRaycastPos = currentRaycastPos;
+        ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        GenerationManager.instance.Generate();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
+        
         if (currentRaycastPos.x == -1)
         {
             raycastTile.gameObject.SetActive(false);
@@ -129,6 +169,9 @@ public class InputController : MonoBehaviour
         }
     }
 }
+        */
+
+
 
 
 

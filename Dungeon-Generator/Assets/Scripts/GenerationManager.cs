@@ -13,7 +13,7 @@ public class GenerationManager : MonoBehaviour
 
     public void Generate()
     {
-        ObjectPoolMasterclass[,] tilesArray = ObjectArray.instance.RequestTemporaryTilesArray();
+        ObjectPoolMasterclass[,] tilesArray = ObjectArray.instance.RequestTemporaryPoolArray();
         ReturnTilesToPool();
         GenerateTiles(tilesArray);
     }
@@ -37,7 +37,7 @@ public class GenerationManager : MonoBehaviour
                     continue;
 
                 PoolChild newTile = tilesArray[x, z].RequestObject();
-                newTile.transform.position = new Vector3(x, 0, z);
+                newTile.transform.position = new Vector3(x, 0.1f, z);
                 generatedTiles.Add(newTile);
             }
         }

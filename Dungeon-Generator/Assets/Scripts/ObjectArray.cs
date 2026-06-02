@@ -9,8 +9,8 @@ public class ObjectArray : MonoBehaviour
     // array is larger than needed by 2 at x and y
     // x.0, y.0, x.Length, y.Length are empty for logic purposes
     // for this reason x += 1 and y += 1 are added in AssignObjectToArray & ReleaseObjectFromArray
-    ObjectPoolMasterclass[,] tilesArray;
-    ObjectPoolMasterclass[,] temporaryTilesArray;
+    ObjectPoolMasterclass[,] poolArray;
+    ObjectPoolMasterclass[,] temporaryPoolArray;
 
     // before contents are (re)generated all contents are reset
     //List<PoolChild> contentsList = new List<PoolChild>();
@@ -18,74 +18,68 @@ public class ObjectArray : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        tilesArray = new ObjectPoolMasterclass[53, 53];
+        poolArray = new ObjectPoolMasterclass[50, 50];
 
     }
 
-    public ObjectPoolMasterclass[,] RequestTemporaryTilesArray()
+    public ObjectPoolMasterclass[,] RequestTemporaryPoolArray()
     {
-        return temporaryTilesArray;
+        return temporaryPoolArray;
     }
 
-    public void FinaliseArray()
+    public void FinalisePoolArray()
     {
-        tilesArray = temporaryTilesArray;
+        poolArray = temporaryPoolArray;
     }
 
-    ObjectPoolMasterclass[,] CreateNewArray(ObjectPoolMasterclass[,] oldArray)
+    ObjectPoolMasterclass[,] CreateNewPoolArray(ObjectPoolMasterclass[,] oldArray)
     {
         ObjectPoolMasterclass[,] newArray = new ObjectPoolMasterclass[oldArray.GetLength(0), oldArray.GetLength(1)];
         for (int x = 0; x < oldArray.GetLength(0); x++)
         {
             for (int z = 0; z < oldArray.GetLength(1); z++)
             {
-                newArray[x,z] = oldArray[x,z];
+                newArray[x, z] = oldArray[x, z];
             }
         }
 
         return newArray;
     }
 
-    public void GenerateTemporaryArray(bool destroy, Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
+    public void GenerateTemporaryArray(Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
     {
-        temporaryTilesArray = CreateNewArray(tilesArray);
-
-        if(destroy)
-        {
-            DestroyFromArray(initialTile, currentTargetTile);
-            return;
-        }
+        temporaryPoolArray = CreateNewPoolArray(poolArray);
 
         if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
-            temporaryTilesArray[(int)initialTile.x, (int)initialTile.z] = tilesPool;
+            temporaryPoolArray[(int)initialTile.x, (int)initialTile.z] = tilesPool;
         }
         else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
-            { 
-                temporaryTilesArray[x, (int)currentTargetTile.z] = tilesPool;
+            {
+                temporaryPoolArray[x, (int)currentTargetTile.z] = tilesPool;
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
             {
-                temporaryTilesArray[x, (int)currentTargetTile.z] = tilesPool;
+                temporaryPoolArray[x, (int)currentTargetTile.z] = tilesPool;
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
             {
-                temporaryTilesArray[(int)initialTile.x, z] = tilesPool;
+                temporaryPoolArray[(int)initialTile.x, z] = tilesPool;
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
             {
-                temporaryTilesArray[(int)initialTile.x, z] = tilesPool;
+                temporaryPoolArray[(int)initialTile.x, z] = tilesPool;
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
@@ -94,7 +88,7 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
-                    temporaryTilesArray[x, z] = tilesPool;
+                    temporaryPoolArray[x, z] = tilesPool;
                 }
             }
         }
@@ -104,7 +98,7 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
-                    temporaryTilesArray[x, z] = tilesPool;
+                    temporaryPoolArray[x, z] = tilesPool;
                 }
             }
         }
@@ -114,7 +108,7 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    temporaryTilesArray[x, z] = tilesPool;
+                    temporaryPoolArray[x, z] = tilesPool;
                 }
             }
         }
@@ -124,12 +118,16 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    temporaryTilesArray[x, z] = tilesPool;
+                    temporaryPoolArray[x, z] = tilesPool;
                 }
             }
         }
     }
+}
 
+
+
+    /*
     void DestroyFromArray(Vector3 initialTile, Vector3 currentTargetTile)
     {
         if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
@@ -209,7 +207,7 @@ public class ObjectArray : MonoBehaviour
 
     
 
-
+    */
 
 
 
