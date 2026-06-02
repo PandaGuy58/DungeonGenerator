@@ -18,7 +18,7 @@ public class ObjectArray : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        poolArray = new ObjectPoolMasterclass[50, 50];
+        poolArray = new ObjectPoolMasterclass[51, 51];
 
     }
 

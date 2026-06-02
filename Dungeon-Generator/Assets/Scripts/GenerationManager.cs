@@ -37,7 +37,7 @@ public class GenerationManager : MonoBehaviour
                     continue;
 
                 PoolChild newTile = tilesArray[x, z].RequestObject();
-                newTile.transform.position = new Vector3(x, 0.1f, z);
+                newTile.transform.position = new Vector3(x +0.5f, 0.1f, z -0.5f);
                 generatedTiles.Add(newTile);
             }
         }

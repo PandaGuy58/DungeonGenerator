@@ -84,8 +84,8 @@ public class InputController : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, raycastMask))
         {
             Vector3 newVector = new Vector3(Mathf.RoundToInt(hit.point.x), 0, Mathf.RoundToInt(hit.point.z));
-            newVector.x = Mathf.Clamp(newVector.x, 0, 49);
-            newVector.z = Mathf.Clamp(newVector.z, 0, 49);
+            newVector.x = Mathf.Clamp(newVector.x, 1, 49);
+            newVector.z = Mathf.Clamp(newVector.z, 1, 49);
             currentRaycastPos = newVector;
         }
         else
