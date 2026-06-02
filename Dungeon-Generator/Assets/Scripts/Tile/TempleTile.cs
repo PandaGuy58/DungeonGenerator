@@ -9,6 +9,6 @@ public class TempleTile : TileMasterClass
         minorColumnPool= TempleMinorColumn.instance;
         doorPool = TempleDoor.instance;
 
-        poolChildReference = GetComponent<PoolChild>();
+        InitialiseTile();
     }
 }

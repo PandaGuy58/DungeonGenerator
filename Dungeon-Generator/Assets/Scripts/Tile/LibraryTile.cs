@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public class LibraryTile : TileMasterClass
 {
     private void Awake()
@@ -8,7 +10,7 @@ public class LibraryTile : TileMasterClass
         minorColumnPool = LibraryMinorColumn.instance;
         doorPool = LibraryDoor.instance;
 
-        poolChildReference = GetComponent<PoolChild>();
+        InitialiseTile();
     }
 
 }

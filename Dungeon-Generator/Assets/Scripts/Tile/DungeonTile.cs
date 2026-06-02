@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class DungeonTile : TileMasterClass
 {
     private void Awake()
@@ -7,6 +9,6 @@ public class DungeonTile : TileMasterClass
         minorColumnPool = DungeonMinorColumn.instance;
         doorPool = DungeonDoor.instance;
 
-        poolChildReference = GetComponent<PoolChild>();
+        InitialiseTile();
     }
 }

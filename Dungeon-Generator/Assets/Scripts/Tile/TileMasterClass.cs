@@ -9,6 +9,14 @@ public class TileMasterClass : MonoBehaviour
     [HideInInspector] public ObjectPoolMasterclass doorPool;
 
     [HideInInspector] public PoolChild poolChildReference;
+    [HideInInspector] public Renderer rend;
+
+    public void InitialiseTile()
+    {
+        poolChildReference = GetComponent<PoolChild>();
+        rend = GetComponent<Renderer>();
+    }
+
     public void ReturnToPool()
     {
         poolChildReference.ReturnChildToPool();
@@ -17,5 +25,16 @@ public class TileMasterClass : MonoBehaviour
     public PoolChild RequestWall()
     {
         return wallPool.RequestObject();
+    }
+
+    public void ControlShader(bool shaderActive)
+    {
+        if (shaderActive)
+        {
+            rend.material.SetFloat("_Active", 1);
+            return;
+        }
+
+        rend.material.SetFloat("_Active", 0);
     }
 }

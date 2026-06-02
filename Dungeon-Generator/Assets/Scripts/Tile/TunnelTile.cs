@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public class TunnelTile : TileMasterClass
 {
     private void Awake()
@@ -8,6 +10,6 @@ public class TunnelTile : TileMasterClass
         majorColumnPool = TunnelMajorColumn.instance;
         minorColumnPool = TunnelMinorColumn.instance;
 
-        poolChildReference = GetComponent<PoolChild>();
+        InitialiseTile();
     }
 }
