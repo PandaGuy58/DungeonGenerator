@@ -110,6 +110,7 @@ public class InputController : MonoBehaviour
     void MouseButtonDown()
     {
         initialRaycastPos = currentRaycastPos;
+        GenerationManager.instance.DisableContents();
     }
 
     void MouseButton()
@@ -127,7 +128,7 @@ public class InputController : MonoBehaviour
         }
 
         previousRaycastPos = currentRaycastPos;
-        GenerationManager.instance.Generate();
+        GenerationManager.instance.GenerateTiles();
 
     }
 
@@ -136,10 +137,11 @@ public class InputController : MonoBehaviour
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
             ObjectArray.instance.RemoveFromArray();
-            GenerationManager.instance.Generate();
+            GenerationManager.instance.GenerateTiles();
         }
 
         ObjectArray.instance.FinalisePoolArray();
+        GenerationManager.instance.GenerateContents();
     }
 
     void MouseInactive(bool force)
@@ -155,7 +157,7 @@ public class InputController : MonoBehaviour
                 ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
             }
                 
-            GenerationManager.instance.Generate();
+            GenerationManager.instance.GenerateTiles();
             previousRaycastPos = currentRaycastPos;
             return;
         }
@@ -175,7 +177,7 @@ public class InputController : MonoBehaviour
             ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
         }
 
-        GenerationManager.instance.Generate();
+        GenerationManager.instance.GenerateTiles();
         previousRaycastPos = currentRaycastPos;
     }
 }

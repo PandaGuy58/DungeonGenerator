@@ -175,7 +175,7 @@ public class ObjectArray : MonoBehaviour
             if(temporaryArray[(int)initialTile.x, (int)initialTile.z] == null)
             {
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, false);
+                data.Initialise(tilesPool, true);
                 temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
             }
             else
@@ -190,7 +190,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[x, (int)currentTargetTile.z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(tilesPool, true);
                     temporaryArray[x, (int)currentTargetTile.z] = data;
                 }
                 else
@@ -206,7 +206,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[x, (int)currentTargetTile.z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(tilesPool, true);
                     temporaryArray[x, (int)currentTargetTile.z] = data;
                 }
                 else
@@ -222,7 +222,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[(int)initialTile.x, z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(tilesPool, true);
                     temporaryArray[(int)initialTile.x, z] = data;
                 }
                 else
@@ -238,7 +238,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[(int)initialTile.x, z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(tilesPool, true);
                     temporaryArray[(int)initialTile.x, z] = data;
                 }
                 else
@@ -257,7 +257,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, false);
+                        data.Initialise(tilesPool, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -276,7 +276,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, false);
+                        data.Initialise(tilesPool, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -295,7 +295,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, false);
+                        data.Initialise(tilesPool, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -314,7 +314,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, false);
+                        data.Initialise(tilesPool, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -343,6 +343,13 @@ public class ObjectArray : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+
+
 
 
 /*
