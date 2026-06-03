@@ -93,16 +93,11 @@ public class GenerationManager : MonoBehaviour
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.z += 1;
-        calculate.y += 0.5f;
-        calculate.x -= 0.5f;
-
         PoolChild poolChild = tileArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
 
         calculate = Vector3.zero;
-        calculate.y = 90;
-        poolChild.gameObject.transform.eulerAngles = calculate;
+        poolChild.transform.eulerAngles = calculate;
         contents.Add(poolChild);
     }
 
@@ -112,17 +107,15 @@ public class GenerationManager : MonoBehaviour
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.y += 0.5f;
-        calculate.x -= 0.5f;
-
+        calculate.z += 1;
+        calculate.x -= 1;
         PoolChild poolChild = tileArray[x, y].RequestWall();
-        poolChild.gameObject.transform.position = calculate;
+        poolChild.transform.position = calculate;
 
         calculate = Vector3.zero;
-        calculate.y = 90;
-        poolChild.gameObject.transform.eulerAngles = calculate;
+        calculate.y = 180;
+        poolChild.transform.eulerAngles = calculate;
         contents.Add(poolChild);
-
     }
 
     void GenerateRightWall(int x, int y)
@@ -131,14 +124,13 @@ public class GenerationManager : MonoBehaviour
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.y += 0.5f;
-        calculate.z += 0.5f;
-
+        calculate.x -= 1;
         PoolChild poolChild = tileArray[x, y].RequestWall();
-        poolChild.gameObject.transform.position = calculate;
+        poolChild.transform.position = calculate;
 
         calculate = Vector3.zero;
-        poolChild.gameObject.transform.eulerAngles = calculate;
+        calculate.y = 90;
+        poolChild.transform.eulerAngles = calculate;
         contents.Add(poolChild);
     }
 
@@ -148,15 +140,13 @@ public class GenerationManager : MonoBehaviour
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.y += 0.5f;
-        calculate.x -= 1;
-        calculate.z += 0.5f;
-
+        calculate.z += 1;
         PoolChild poolChild = tileArray[x, y].RequestWall();
         poolChild.gameObject.transform.position = calculate;
 
         calculate = Vector3.zero;
-        poolChild.gameObject.transform.eulerAngles = calculate;
+        calculate.y = -90;
+        poolChild.transform.eulerAngles = calculate;
         contents.Add(poolChild);
     }
 
