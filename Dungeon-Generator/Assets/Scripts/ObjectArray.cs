@@ -2,6 +2,24 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class GenerationData
+{
+    public ObjectPoolMasterclass pool {  get; private set; }
+    public bool destruction { get; private set; }
+
+    public void Initialise(ObjectPoolMasterclass pool, bool destruction)
+    {
+        this.destruction = destruction;
+        this.pool = pool;
+    }
+
+    public void EnableDestruction(bool destruction)
+    {
+        this.destruction = destruction;
+    }
+}
+
+
 public class ObjectArray : MonoBehaviour
 {
     public static ObjectArray instance;
@@ -9,8 +27,8 @@ public class ObjectArray : MonoBehaviour
     // array is larger than needed by 2 at x and y
     // x.0, y.0, x.Length, y.Length are empty for logic purposes
     // for this reason x += 1 and y += 1 are added in AssignObjectToArray & ReleaseObjectFromArray
-    ObjectPoolMasterclass[,] poolArray;
-    ObjectPoolMasterclass[,] temporaryPoolArray;
+    GenerationData[,] array;
+    GenerationData[,] temporaryArray;
 
     // before contents are (re)generated all contents are reset
     //List<PoolChild> contentsList = new List<PoolChild>();
@@ -18,23 +36,23 @@ public class ObjectArray : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        poolArray = new ObjectPoolMasterclass[51, 51];
+        array = new GenerationData[51, 51];
 
     }
 
-    public ObjectPoolMasterclass[,] RequestTemporaryPoolArray()
+    public GenerationData[,] RequestTemporaryArray()
     {
-        return temporaryPoolArray;
+        return temporaryArray;
     }
 
     public void FinalisePoolArray()
     {
-        poolArray = temporaryPoolArray;
+        array = temporaryArray;
     }
 
-    ObjectPoolMasterclass[,] CreateNewPoolArray(ObjectPoolMasterclass[,] oldArray)
+    GenerationData[,] CreateNewArray(GenerationData[,] oldArray)
     {
-        ObjectPoolMasterclass[,] newArray = new ObjectPoolMasterclass[oldArray.GetLength(0), oldArray.GetLength(1)];
+        GenerationData[,] newArray = new GenerationData[oldArray.GetLength(0), oldArray.GetLength(1)];
         for (int x = 0; x < oldArray.GetLength(0); x++)
         {
             for (int z = 0; z < oldArray.GetLength(1); z++)
@@ -48,38 +66,49 @@ public class ObjectArray : MonoBehaviour
 
     public void GenerateTemporaryArray(Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
     {
-        temporaryPoolArray = CreateNewPoolArray(poolArray);
+        temporaryArray = CreateNewArray(array);
+
 
         if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
-            temporaryPoolArray[(int)initialTile.x, (int)initialTile.z] = tilesPool;
+            GenerationData data = new GenerationData();
+            data.Initialise(tilesPool, false);
+            temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
         }
         else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
             {
-                temporaryPoolArray[x, (int)currentTargetTile.z] = tilesPool;
+                GenerationData data = new GenerationData();
+                data.Initialise(tilesPool, false);
+                temporaryArray[x, (int)currentTargetTile.z] = data;
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
             {
-                temporaryPoolArray[x, (int)currentTargetTile.z] = tilesPool;
+                GenerationData data = new GenerationData();
+                data.Initialise(tilesPool, false);
+                temporaryArray[x, (int)currentTargetTile.z] = data;
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
             {
-                temporaryPoolArray[(int)initialTile.x, z] = tilesPool;
+                GenerationData data = new GenerationData();
+                data.Initialise(tilesPool, false);
+                temporaryArray[(int)initialTile.x, z] = data;
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
             {
-                temporaryPoolArray[(int)initialTile.x, z] = tilesPool;
+                GenerationData data = new GenerationData();
+                data.Initialise(tilesPool, false);
+                temporaryArray[(int)initialTile.x, z] = data;
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
@@ -88,7 +117,9 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
-                    temporaryPoolArray[x, z] = tilesPool;
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, z] = data;
                 }
             }
         }
@@ -98,7 +129,9 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
-                    temporaryPoolArray[x, z] = tilesPool;
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, z] = data;
                 }
             }
         }
@@ -108,7 +141,9 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    temporaryPoolArray[x, z] = tilesPool;
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, z] = data;
                 }
             }
         }
@@ -118,12 +153,176 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
-                    temporaryPoolArray[x, z] = tilesPool;
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, z] = data;
+                }
+            }
+        }
+    }
+
+    public void GenerateTemporaryArrayDestruction(Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
+    {
+        temporaryArray = CreateNewArray(array);
+
+        if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        {
+            if(temporaryArray[(int)initialTile.x, (int)initialTile.z] == null)
+            {
+                GenerationData data = new GenerationData();
+                data.Initialise(tilesPool, false);
+                temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
+            }
+            else
+            {
+                temporaryArray[(int)initialTile.x, (int)initialTile.z].EnableDestruction(true);
+            }
+        }
+        else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            {
+                if(temporaryArray[x, (int)currentTargetTile.z] == null)
+                {
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, (int)currentTargetTile.z] = data;
+                }
+                else
+                {
+                    temporaryArray[x, (int)currentTargetTile.z].EnableDestruction(true);
+                }
+            }
+        }
+        else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            {
+                if(temporaryArray[x, (int)currentTargetTile.z] == null)
+                {
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[x, (int)currentTargetTile.z] = data;
+                }
+                else
+                {
+                    temporaryArray[x, (int)currentTargetTile.z].EnableDestruction(true);
+                }
+            }
+        }
+        else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        {
+            for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+            {
+                if(temporaryArray[(int)initialTile.x, z] == null)
+                {
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[(int)initialTile.x, z] = data;
+                }
+                else
+                {
+                    temporaryArray[(int)initialTile.x, z].EnableDestruction(true);
+                }
+            }
+        }
+        else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        {
+            for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+            {
+                if(temporaryArray[(int)initialTile.x, z] == null)
+                {
+                    GenerationData data = new GenerationData();
+                    data.Initialise(tilesPool, false);
+                    temporaryArray[(int)initialTile.x, z] = data;
+                }
+                else
+                {
+                    temporaryArray[(int)initialTile.x, z].EnableDestruction(true);
+                }
+                
+            }
+        }
+        else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            {
+                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+                {
+                    if(temporaryArray[x, z] == null)
+                    {
+                        GenerationData data = new GenerationData();
+                        data.Initialise(tilesPool, false);
+                        temporaryArray[x, z] = data;
+                    }
+                    else
+                    {
+                        temporaryArray[x, z].EnableDestruction(true);
+                    }
+                }
+            }
+        }
+        else if (initialTile.x > currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            {
+                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+                {
+                    if(temporaryArray[x, z] == null)
+                    {
+                        GenerationData data = new GenerationData();
+                        data.Initialise(tilesPool, false);
+                        temporaryArray[x, z] = data;
+                    }
+                    else
+                    {
+                        temporaryArray[x, z].EnableDestruction(true);
+                    }
+                }
+            }
+        }
+        else if (initialTile.x < currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            {
+                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+                {
+                    if(temporaryArray[x, z] == null)
+                    {
+                        GenerationData data = new GenerationData();
+                        data.Initialise(tilesPool, false);
+                        temporaryArray[x, z] = data;
+                    }
+                    else
+                    {
+                        temporaryArray[x, z].EnableDestruction(true);
+                    }
+                }
+            }
+        }
+        else if (initialTile.x > currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        {
+            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            {
+                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+                {
+                    if(temporaryArray[x, z] == null)
+                    {
+                        GenerationData data = new GenerationData();
+                        data.Initialise(tilesPool, false);
+                        temporaryArray[x, z] = data;
+                    }
+                    else
+                    {
+                        temporaryArray[x, z].EnableDestruction(true);
+                    }
                 }
             }
         }
     }
 }
+
+
 
 
 
@@ -226,154 +425,154 @@ public class ObjectArray : MonoBehaviour
 
 
 
-    /*
-    public void GenerateContent(Vector3 startTile, Vector3 endTile, ObjectPoolMasterclass tilesPool)
+/*
+public void GenerateContent(Vector3 startTile, Vector3 endTile, ObjectPoolMasterclass tilesPool)
+{
+  //  ReturnContentToPools();
+    GenerateTemporaryArray(startTile, endTile, tilesPool);
+   // GenerateTiles();
+    //GenerateWalls();
+    // GenerateMajorColumns();
+    // GenerateMinorColumns();
+    // GenerateDoors();
+}
+
+public void FinaliseGeneration()
+{
+    tilesArray = temporaryTilesArray;
+}
+
+void ReturnContentToPools()
+{
+    for(int i = 0; i < contentsList.Count; i++)
     {
-      //  ReturnContentToPools();
-        GenerateTemporaryArray(startTile, endTile, tilesPool);
-       // GenerateTiles();
-        //GenerateWalls();
-        // GenerateMajorColumns();
-        // GenerateMinorColumns();
-        // GenerateDoors();
+        contentsList[i].ReturnChildToPool();
     }
 
-    public void FinaliseGeneration()
-    {
-        tilesArray = temporaryTilesArray;
-    }
+    contentsList.Clear();
+}
+*/
 
-    void ReturnContentToPools()
+
+/*
+void GenerateTiles()
+{
+    for (int x = 0; x < temporaryTilesArray.GetLength(0); x++)
     {
-        for(int i = 0; i < contentsList.Count; i++)
+        for (int z = 0; z < temporaryTilesArray.GetLength(1); z++)
         {
-            contentsList[i].ReturnChildToPool();
+            PoolChild newTile = temporaryTilesArray[x, z].RequestObject();
+            newTile.transform.position = new Vector3(x, 0, z);
+            contentsList.Add(newTile);
         }
-
-        contentsList.Clear();
-    }
-    */
-
-
-    /*
-    void GenerateTiles()
-    {
-        for (int x = 0; x < temporaryTilesArray.GetLength(0); x++)
-        {
-            for (int z = 0; z < temporaryTilesArray.GetLength(1); z++)
-            {
-                PoolChild newTile = temporaryTilesArray[x, z].RequestObject();
-                newTile.transform.position = new Vector3(x, 0, z);
-                contentsList.Add(newTile);
-            }
-        }
-    }
-
-    void GenerateWalls()
-    {
-        for (int x = 0; x < tilesArray.GetLength(0); x++)
-        {
-            for (int y = 0; y < tilesArray.GetLength(1); y++)
-            {
-                if (tilesArray[x, y] == null)
-                    continue;
-
-                GenerateTopWall(x, y);
-                GenerateBottomWall(x, y);
-                GenerateRightWall(x, y);
-                GenerateLeftWall(x, y);
-            }
-        }
-    }
-
-    void GenerateTopWall(int x, int y)
-    {
-        if (tilesArray[x, y + 1] != null)
-            return;
-
-        Vector3 calculate = tilesArray[x, y].transform.position;
-        calculate.z += 0.5f;
-        calculate.y += 0.5f;
-
-      //  PoolChild poolChild = tilesArray[x, y].RequestWall();
-    //    poolChild.gameObject.transform.position = calculate;
-
-        calculate = Vector3.zero;
-        calculate.y = 90;
-     //   poolChild.gameObject.transform.eulerAngles = calculate;
-     //   contentsList.Add(poolChild);
-    }
-
-    void GenerateBottomWall(int x, int y)
-    {
-        if (tilesArray[x, y - 1] != null)
-            return;
-
-        Vector3 calculate = tilesArray[x, y].transform.position;
-        calculate.z -= 0.5f;
-        calculate.y += 0.5f;
-
-      //  PoolChild poolChild = tilesArray[x, y].RequestWall();
-      //  poolChild.gameObject.transform.position = calculate;
-
-        calculate = Vector3.zero;
-        calculate.y = 90;
-    //    poolChild.gameObject.transform.eulerAngles = calculate;
-    //    contentsList.Add(poolChild);
-    }
-
-    void GenerateRightWall(int x, int y)
-    {
-        if (tilesArray[x + 1, y] != null)
-            return;
-
-        Vector3 calculate = tilesArray[x, y].transform.position;
-        calculate.x += 0.5f;
-        calculate.y += 0.5f;
-
-       // PoolChild poolChild = tilesArray[x, y].RequestWall();
-     //   poolChild.gameObject.transform.position = calculate;
-
-        calculate = Vector3.zero;
-      //  poolChild.gameObject.transform.eulerAngles = calculate;
-       // contentsList.Add(poolChild);
-
-    }
-
-    void GenerateLeftWall(int x, int y)
-    {
-        if (tilesArray[x - 1, y] != null)
-            return;
-
-        Vector3 calculate = tilesArray[x, y].transform.position;
-        calculate.x -= 0.5f;
-        calculate.y += 0.5f;
-
-      // PoolChild poolChild = tilesArray[x, y].RequestWall();
-     //   poolChild.gameObject.transform.position = calculate;
-
-        calculate = Vector3.zero;
-      //  poolChild.gameObject.transform.eulerAngles = calculate;
-      //  contentsList.Add(poolChild);
-    }
-
-     void GenerateMajorColumns()
-    {
-
-    }
-
-    void GenerateMinorColumns()
-    {
-
-    }
-
-    void GenerateDoors()
-    {
-
     }
 }
 
-    */
+void GenerateWalls()
+{
+    for (int x = 0; x < tilesArray.GetLength(0); x++)
+    {
+        for (int y = 0; y < tilesArray.GetLength(1); y++)
+        {
+            if (tilesArray[x, y] == null)
+                continue;
+
+            GenerateTopWall(x, y);
+            GenerateBottomWall(x, y);
+            GenerateRightWall(x, y);
+            GenerateLeftWall(x, y);
+        }
+    }
+}
+
+void GenerateTopWall(int x, int y)
+{
+    if (tilesArray[x, y + 1] != null)
+        return;
+
+    Vector3 calculate = tilesArray[x, y].transform.position;
+    calculate.z += 0.5f;
+    calculate.y += 0.5f;
+
+  //  PoolChild poolChild = tilesArray[x, y].RequestWall();
+//    poolChild.gameObject.transform.position = calculate;
+
+    calculate = Vector3.zero;
+    calculate.y = 90;
+ //   poolChild.gameObject.transform.eulerAngles = calculate;
+ //   contentsList.Add(poolChild);
+}
+
+void GenerateBottomWall(int x, int y)
+{
+    if (tilesArray[x, y - 1] != null)
+        return;
+
+    Vector3 calculate = tilesArray[x, y].transform.position;
+    calculate.z -= 0.5f;
+    calculate.y += 0.5f;
+
+  //  PoolChild poolChild = tilesArray[x, y].RequestWall();
+  //  poolChild.gameObject.transform.position = calculate;
+
+    calculate = Vector3.zero;
+    calculate.y = 90;
+//    poolChild.gameObject.transform.eulerAngles = calculate;
+//    contentsList.Add(poolChild);
+}
+
+void GenerateRightWall(int x, int y)
+{
+    if (tilesArray[x + 1, y] != null)
+        return;
+
+    Vector3 calculate = tilesArray[x, y].transform.position;
+    calculate.x += 0.5f;
+    calculate.y += 0.5f;
+
+   // PoolChild poolChild = tilesArray[x, y].RequestWall();
+ //   poolChild.gameObject.transform.position = calculate;
+
+    calculate = Vector3.zero;
+  //  poolChild.gameObject.transform.eulerAngles = calculate;
+   // contentsList.Add(poolChild);
+
+}
+
+void GenerateLeftWall(int x, int y)
+{
+    if (tilesArray[x - 1, y] != null)
+        return;
+
+    Vector3 calculate = tilesArray[x, y].transform.position;
+    calculate.x -= 0.5f;
+    calculate.y += 0.5f;
+
+  // PoolChild poolChild = tilesArray[x, y].RequestWall();
+ //   poolChild.gameObject.transform.position = calculate;
+
+    calculate = Vector3.zero;
+  //  poolChild.gameObject.transform.eulerAngles = calculate;
+  //  contentsList.Add(poolChild);
+}
+
+ void GenerateMajorColumns()
+{
+
+}
+
+void GenerateMinorColumns()
+{
+
+}
+
+void GenerateDoors()
+{
+
+}
+}
+
+*/
 
 
 

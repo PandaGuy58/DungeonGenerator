@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ public class GenerationManager : MonoBehaviour
 
     public void Generate()
     {
-        ObjectPoolMasterclass[,] tilesArray = ObjectArray.instance.RequestTemporaryPoolArray();
+        GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
         ReturnTilesToPool();
-        GenerateTiles(tilesArray);
+        GenerateTiles(array);
     }
 
     void ReturnTilesToPool()
@@ -27,19 +28,59 @@ public class GenerationManager : MonoBehaviour
         generatedTiles.Clear();
     }
 
-    void GenerateTiles(ObjectPoolMasterclass[,] tilesArray)
+    void GenerateTiles(GenerationData[,] dataArray)
     {
-        for (int x = 0; x < tilesArray.GetLength(0); x++)
+        for (int x = 0; x < dataArray.GetLength(0); x++)
         {
-            for (int z = 0; z < tilesArray.GetLength(1); z++)
+            for (int z = 0; z < dataArray.GetLength(1); z++)
             {
-                if (tilesArray[x, z] == null)
+                if (dataArray[x, z] == null)
                     continue;
 
-                PoolChild newTile = tilesArray[x, z].RequestObject();
-                newTile.transform.position = new Vector3(x +0.5f, 0.1f, z -0.5f);
+                PoolChild newTile = dataArray[x, z].pool.RequestObject();
+                newTile.transform.position = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
                 generatedTiles.Add(newTile);
+
+                if (newTile.CompareTag("Destructive"))
+                    continue;
+
+                TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
+
+                if (dataArray[x, z].destruction)
+                {
+                    tile.ControlShader(true);
+                }
+                else
+                {
+                    tile.ControlShader(false);
+                }
+
             }
         }
     }
 }
+                /*
+
+            }
+        }
+    }
+}
+
+                */
+
+
+
+                /*
+                if (!dataArray[x, z].destruction)
+                    return;
+
+                TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
+                tile.ControlShader(true);
+            }
+        }
+    }
+}
+
+              
+           
+                 */

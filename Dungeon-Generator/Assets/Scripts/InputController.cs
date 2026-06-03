@@ -40,6 +40,7 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionSwitch();
+            MouseInactive(true);
         }
         else if(Input.GetMouseButtonDown(0))
         {
@@ -55,7 +56,7 @@ public class InputController : MonoBehaviour
         }
         else
         {
-            MouseInactive();
+            MouseInactive(false);
         }
 
         /*
@@ -116,7 +117,14 @@ public class InputController : MonoBehaviour
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        ObjectArray.instance.GenerateTemporaryArray(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        if (currentSelectedTilePool == tilePools.Count - 1)
+        {
+            ObjectArray.instance.GenerateTemporaryArrayDestruction(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        }
+        else
+        {
+            ObjectArray.instance.GenerateTemporaryArray(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        }
 
         previousRaycastPos = currentRaycastPos;
         GenerationManager.instance.Generate();
@@ -128,17 +136,41 @@ public class InputController : MonoBehaviour
         ObjectArray.instance.FinalisePoolArray();
     }
 
-    void MouseInactive()
+    void MouseInactive(bool force)
     {
+        if (force)
+        {
+            if (currentSelectedTilePool == tilePools.Count - 1)
+            {
+                ObjectArray.instance.GenerateTemporaryArrayDestruction(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+            }
+            else
+            {
+                ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+            }
+                
+            GenerationManager.instance.Generate();
+            previousRaycastPos = currentRaycastPos;
+            return;
+        }
+
         if (currentRaycastPos.x == -1)
             return;
 
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        previousRaycastPos = currentRaycastPos;
-        ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        if (currentSelectedTilePool == tilePools.Count - 1)
+        {
+            ObjectArray.instance.GenerateTemporaryArrayDestruction(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        }
+        else
+        {
+            ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+        }
+
         GenerationManager.instance.Generate();
+        previousRaycastPos = currentRaycastPos;
     }
 }
 
