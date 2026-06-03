@@ -32,9 +32,10 @@ public class TileMasterClass : MonoBehaviour
         if (shaderActive)
         {
             rend.material.SetFloat("_Active", 1);
-            return;
         }
-
-        rend.material.SetFloat("_Active", 0);
+        else
+        {
+            rend.material.SetFloat("_Active", 0);
+        }        
     }
 }

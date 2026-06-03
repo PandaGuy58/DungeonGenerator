@@ -57,7 +57,12 @@ public class ObjectArray : MonoBehaviour
         {
             for (int z = 0; z < oldArray.GetLength(1); z++)
             {
-                newArray[x, z] = oldArray[x, z];
+                if (oldArray[x, z] == null)
+                    continue;
+
+                GenerationData data = new GenerationData();
+                data.Initialise(oldArray[x, z].pool, oldArray[x, z].destruction);
+                newArray[x, z] = data;
             }
         }
 
@@ -320,10 +325,32 @@ public class ObjectArray : MonoBehaviour
             }
         }
     }
+
+    public void RemoveFromArray()
+    {
+        for(int x = 0; x < temporaryArray.GetLength(0); x++)
+        {
+            for(int y = 0;  y < temporaryArray.GetLength(1); y++)
+            {
+                if (temporaryArray[x, y] == null)
+                    continue;
+
+                if (!temporaryArray[x, y].destruction)
+                    continue;
+
+                temporaryArray[x, y] = null;
+            }
+        }
+    }
 }
 
 
-
+/*
+ *         for (int x = 0; x < dataArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < dataArray.GetLength(1); z++)
+            {
+*/
 
 
     /*

@@ -133,6 +133,12 @@ public class InputController : MonoBehaviour
 
     void MouseButtonUp()
     {
+        if (currentSelectedTilePool == tilePools.Count - 1)
+        {
+            ObjectArray.instance.RemoveFromArray();
+            GenerationManager.instance.Generate();
+        }
+
         ObjectArray.instance.FinalisePoolArray();
     }
 
