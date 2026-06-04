@@ -1,14 +1,11 @@
-using UnityEngine;
-
 public class DungeonTile : TileMasterClass
 {
     private void Awake()
     {
-        wallPool = DungeonWall.instance;
-        majorColumnPool = DungeonMajorColumn.instance;
-        minorColumnPool = DungeonMinorColumn.instance;
-        doorPool = DungeonDoor.instance;
-
+        SetWallPool(DungeonWall.instance);
+        SetMajorColumnPool(DungeonMajorColumn.instance);
+        SetMinorColumnPool(DungeonMinorColumn.instance);
+        SetDoorPool(DungeonDoor.instance);
         InitialiseTile();
     }
 }

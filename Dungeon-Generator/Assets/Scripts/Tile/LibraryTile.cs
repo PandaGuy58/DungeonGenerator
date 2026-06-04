@@ -1,15 +1,11 @@
-
-using UnityEngine;
-
 public class LibraryTile : TileMasterClass
 {
     private void Awake()
     {
-        wallPool = LibraryWall.instance;
-        majorColumnPool = LibraryMajorColumn.instance;
-        minorColumnPool = LibraryMinorColumn.instance;
-        doorPool = LibraryDoor.instance;
-
+        SetWallPool(LibraryWall.instance);
+        SetMajorColumnPool(LibraryMajorColumn.instance);
+        SetMinorColumnPool(LibraryMinorColumn.instance);
+        SetDoorPool(LibraryDoor.instance);
         InitialiseTile();
     }
 

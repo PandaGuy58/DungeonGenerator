@@ -1,14 +1,11 @@
-using UnityEngine;
-
 public class TempleTile : TileMasterClass
 {
     private void Awake()
     {
-        wallPool = TempleWall.instance;
-        majorColumnPool= TempleMajorColumn.instance;
-        minorColumnPool= TempleMinorColumn.instance;
-        doorPool = TempleDoor.instance;
-
+        SetWallPool(TempleWall.instance);
+        SetMajorColumnPool(TempleMajorColumn.instance);
+        SetMinorColumnPool(TempleMinorColumn.instance);
+        SetDoorPool(TempleDoor.instance);
         InitialiseTile();
     }
 }

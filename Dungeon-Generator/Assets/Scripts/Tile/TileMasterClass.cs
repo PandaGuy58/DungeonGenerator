@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class TileMasterClass : MonoBehaviour
 {
-    [HideInInspector] public bool passive;
-    [HideInInspector] public ObjectPoolMasterclass wallPool;
-    [HideInInspector] public ObjectPoolMasterclass majorColumnPool;
-    [HideInInspector] public ObjectPoolMasterclass minorColumnPool;
-    [HideInInspector] public ObjectPoolMasterclass doorPool;
+    [HideInInspector] public ObjectPoolMasterclass wallPool {  get; private set; }
+    [HideInInspector] public ObjectPoolMasterclass majorColumnPool { get; private set; }
+    [HideInInspector] public ObjectPoolMasterclass minorColumnPool { get; private set; }
+    [HideInInspector] public ObjectPoolMasterclass doorPool { get; private set; }
 
-    [HideInInspector] public PoolChild poolChildReference;
-    [HideInInspector] public Renderer rend;
+    [HideInInspector] PoolChild poolChildReference;
+    [HideInInspector] Renderer rend;
 
     public void InitialiseTile()
     {
@@ -17,14 +16,29 @@ public class TileMasterClass : MonoBehaviour
         rend = GetComponent<Renderer>();
     }
 
+    public void SetWallPool(ObjectPoolMasterclass wallPool)
+    {
+        this.wallPool = wallPool;
+    }
+
+    public void SetMajorColumnPool(ObjectPoolMasterclass majorColumnPool)
+    {
+        this.majorColumnPool = majorColumnPool;
+    }
+
+    public void SetMinorColumnPool(ObjectPoolMasterclass minorColumnPool)
+    {
+        this.minorColumnPool = minorColumnPool;
+    }
+
+    public void SetDoorPool(ObjectPoolMasterclass doorPool)
+    {
+        this.doorPool = doorPool;
+    }
+
     public void ReturnToPool()
     {
         poolChildReference.ReturnChildToPool();
-    }
-
-    public PoolChild RequestWall()
-    {
-        return wallPool.RequestObject();
     }
 
     public void ControlShader(bool shaderActive)
