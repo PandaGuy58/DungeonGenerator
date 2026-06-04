@@ -160,17 +160,23 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopLeftCorner(int x, int y)
     {
-        if (tileArray[x, y + 1] != null)
-            return;
+        if (tileArray[x, y + 1] == null && tileArray[x - 1, y] == null)
+        {
+            TopLeftCorner(x, y);
+        }
+        else if(tileArray[x - 1, y + 1] == null && tileArray[x, y + 1] != null && tileArray[x - 1, y] != null)
+        {
+            TopLeftCorner(x, y);
+        }
+    }
 
-        if (tileArray[x - 1, y] != null)
-            return;
-
+    void TopLeftCorner(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.85f;
         calculate.y += 0.5f;
-        calculate.z += 0.85f;     
-        
+        calculate.z += 0.85f;
+
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
@@ -178,12 +184,18 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopRightCorner(int x, int y)
     {
-        if (tileArray[x + 1, y] != null)
-            return;
+        if (tileArray[x, y + 1] == null && tileArray[x + 1, y] == null)
+        {
+            TopRightCorner(x, y);
+        }
+        else if (tileArray[x + 1, y + 1] == null && tileArray[x + 1, y] != null && tileArray[x, y + 1] != null)
+        {
+            TopRightCorner(x, y);
+        }
+    }
 
-        if (tileArray[x, y + 1] != null)
-            return;
-
+    void TopRightCorner(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.15f;
         calculate.y += 0.5f;
@@ -196,13 +208,19 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomLeftCorner(int x, int y)
     {
-        if (tileArray[x - 1, y] != null)
-            return;
+        if (tileArray[x - 1, y] == null && tileArray[x, y - 1] == null)
+        {
+            BottomLeftCorner(x, y);
+        }
+        else if(tileArray[x - 1, y -1] == null && tileArray[x - 1, y] != null && tileArray[x, y - 1] != null)
+        {
+            BottomLeftCorner(x, y);
+        }
+    }
 
-        if (tileArray[x, y - 1] != null)
-            return;
-
-        Vector3 calculate = tileArray[x,y].transform.position;
+    void BottomLeftCorner(int x, int y)
+    {
+        Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.85f;
         calculate.y += 0.5f;
         calculate.z += 0.15f;
@@ -214,12 +232,18 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomRightCorner(int x, int y)
     {
-        if (tileArray[x + 1, y] != null)
-            return;
+        if (tileArray[x + 1, y] == null && tileArray[x, y - 1] == null)
+        {
+            BottomRightCorner(x, y);
+        }
+        else if (tileArray[x + 1, y -1] == null && tileArray[x + 1, y] != null && tileArray[x, y - 1] != null)
+        {
+            BottomRightCorner(x, y);
+        }
+    }
 
-        if (tileArray[x, y - 1] != null)
-            return;
-
+    void BottomRightCorner(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.15f;
         calculate.y += 0.5f;
@@ -236,6 +260,9 @@ public class GenerationManager : MonoBehaviour
             return;
 
         if (tileArray[x + 1, y] == null)
+            return;
+
+        if (tileArray[x + 1, y + 1] != null)
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -255,6 +282,9 @@ public class GenerationManager : MonoBehaviour
         if (tileArray[x + 1, y] == null)
             return;
 
+        if (tileArray[x + 1, y - 1] != null)
+            return;
+
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.y += 0.5f;
         calculate.z += 0.15f;
@@ -266,10 +296,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftColumn(int x, int y)
     {
-        if (tileArray[x -1, y] != null)
+        if (tileArray[x - 1, y] != null)
             return;
 
-        if (tileArray[x, y +1] == null)
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        if (tileArray[x - 1, y + 1] != null)
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -288,6 +321,9 @@ public class GenerationManager : MonoBehaviour
             return;
 
         if (tileArray[x, y + 1] == null)
+            return;
+
+        if (tileArray[x + 1, y + 1] != null)
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
