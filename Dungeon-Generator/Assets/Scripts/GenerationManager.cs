@@ -53,7 +53,7 @@ public class GenerationManager : MonoBehaviour
                     continue;
 
                 TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
-                tileArray[x,z] = tile;
+                tileArray[x, z] = tile;
 
                 if (dataArray[x, z].destruction)
                 {
@@ -70,9 +70,9 @@ public class GenerationManager : MonoBehaviour
 
     public void GenerateContents()
     {
-        for(int x = 0; x < tileArray.GetLength(0); x++)
+        for (int x = 0; x < tileArray.GetLength(0); x++)
         {
-            for(int z = 0; z < tileArray.GetLength(1); z++)
+            for (int z = 0; z < tileArray.GetLength(1); z++)
             {
                 if (tileArray[x, z] == null)
                     continue;
@@ -116,7 +116,7 @@ public class GenerationManager : MonoBehaviour
 
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
-        calculate.z += 1;        
+        calculate.z += 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
         poolChild.transform.position = calculate;
 
@@ -160,99 +160,147 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopLeftCorner(int x, int y)
     {
+        Vector3 calculate;
+        PoolChild poolChild;
+
         if (tileArray[x, y + 1] == null && tileArray[x - 1, y] == null)
         {
-            TopLeftCorner(x, y);
-        }
-        else if(tileArray[x - 1, y + 1] == null && tileArray[x, y + 1] != null && tileArray[x - 1, y] != null)
-        {
-            TopLeftCorner(x, y);
-        }
-    }
+            calculate = tileArray[x, y].transform.position;
+            calculate.x -= 0.85f;
+            calculate.y += 0.5f;
+            calculate.z += 0.85f;
 
-    void TopLeftCorner(int x, int y)
-    {
-        Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.x -= 0.85f;
+            poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            poolChild.transform.position = calculate;
+            contents.Add(poolChild);
+            return;
+        }
+
+        if (tileArray[x - 1, y + 1] != null)
+            return;
+
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        if (tileArray[x - 1, y] == null)
+            return;
+
+        calculate = tileArray[x, y].transform.position;
+        calculate.x -= 1;
         calculate.y += 0.5f;
-        calculate.z += 0.85f;
+        calculate.z += 1f;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
     }
 
     void GenerateTopRightCorner(int x, int y)
     {
+        Vector3 calculate;
+        PoolChild poolChild;
+
         if (tileArray[x, y + 1] == null && tileArray[x + 1, y] == null)
         {
-            TopRightCorner(x, y);
-        }
-        else if (tileArray[x + 1, y + 1] == null && tileArray[x + 1, y] != null && tileArray[x, y + 1] != null)
-        {
-            TopRightCorner(x, y);
-        }
-    }
+            calculate = tileArray[x, y].transform.position;
+            calculate.x -= 0.15f;
+            calculate.y += 0.5f;
+            calculate.z += 0.85f;
 
-    void TopRightCorner(int x, int y)
-    {
-        Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.x -= 0.15f;
+            poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            poolChild.transform.position = calculate;
+            contents.Add(poolChild);
+            return;
+        }
+
+        if (tileArray[x + 1, y + 1] != null)
+            return;
+
+        if (tileArray[x + 1, y] == null)
+            return;
+
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        calculate = tileArray[x, y].transform.position;
         calculate.y += 0.5f;
-        calculate.z += 0.85f;
+        calculate.z += 1;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
     }
 
+
     void GenerateBottomLeftCorner(int x, int y)
     {
+        Vector3 calculate;
+        PoolChild poolChild;
+
         if (tileArray[x - 1, y] == null && tileArray[x, y - 1] == null)
         {
-            BottomLeftCorner(x, y);
-        }
-        else if(tileArray[x - 1, y -1] == null && tileArray[x - 1, y] != null && tileArray[x, y - 1] != null)
-        {
-            BottomLeftCorner(x, y);
-        }
-    }
+            calculate = tileArray[x, y].transform.position;
+            calculate.x -= 0.85f;
+            calculate.y += 0.5f;
+            calculate.z += 0.15f;
 
-    void BottomLeftCorner(int x, int y)
-    {
-        Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.x -= 0.85f;
+            poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            poolChild.transform.position = calculate;
+            contents.Add(poolChild);
+            return;
+        }
+
+        if (tileArray[x - 1, y - 1] != null)
+            return;
+
+        if (tileArray[x - 1, y] == null)
+            return;
+
+        if (tileArray[x, y - 1] == null)
+            return;
+
+        calculate = tileArray[x, y].transform.position;
+        calculate.x -= 1;
         calculate.y += 0.5f;
-        calculate.z += 0.15f;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
     }
 
     void GenerateBottomRightCorner(int x, int y)
     {
+        Vector3 calculate;
+        PoolChild poolChild;
+
         if (tileArray[x + 1, y] == null && tileArray[x, y - 1] == null)
         {
-            BottomRightCorner(x, y);
-        }
-        else if (tileArray[x + 1, y -1] == null && tileArray[x + 1, y] != null && tileArray[x, y - 1] != null)
-        {
-            BottomRightCorner(x, y);
-        }
-    }
+            calculate = tileArray[x, y].transform.position;
+            calculate.x -= 0.15f;
+            calculate.y += 0.5f;
+            calculate.z += 0.15f;
 
-    void BottomRightCorner(int x, int y)
-    {
-        Vector3 calculate = tileArray[x, y].transform.position;
-        calculate.x -= 0.15f;
+            poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            poolChild.transform.position = calculate;
+            contents.Add(poolChild);
+        }
+
+        if (tileArray[x + 1, y - 1] != null)
+            return;
+
+        if (tileArray[x + 1, y] == null)
+            return;
+
+        if (tileArray[x, y - 1] == null)
+            return;
+
+        calculate = tileArray[x, y].transform.position;
         calculate.y += 0.5f;
-        calculate.z += 0.15f;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
-    }
+    } 
 
     void GenerateTopColumn(int x, int y)
     {
