@@ -1,20 +1,23 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+
+public enum TileType
+{
+    Dungeon,
+    Library,
+    Temple,
+    Tunnel
+}
 
 public class TileMasterClass : MonoBehaviour
 {
-    [HideInInspector] public ObjectPoolMasterclass wallPool {  get; private set; }
+    [HideInInspector] public ObjectPoolMasterclass wallPool { get; private set; }
     [HideInInspector] public ObjectPoolMasterclass majorColumnPool { get; private set; }
     [HideInInspector] public ObjectPoolMasterclass minorColumnPool { get; private set; }
     [HideInInspector] public ObjectPoolMasterclass doorPool { get; private set; }
+    [HideInInspector] public TileType tileType { get; private set; }
 
-    [HideInInspector] PoolChild poolChildReference;
-    [HideInInspector] Renderer rend;
-
-    public void InitialiseTile()
-    {
-        poolChildReference = GetComponent<PoolChild>();
-        rend = GetComponent<Renderer>();
-    }
+    [SerializeField] Renderer rend; // serialized in case the shader is nested in the gameobject's hierarchy
 
     public void SetWallPool(ObjectPoolMasterclass wallPool)
     {
@@ -36,20 +39,14 @@ public class TileMasterClass : MonoBehaviour
         this.doorPool = doorPool;
     }
 
-    public void ReturnToPool()
+    public void SetTileType(TileType tileType)
     {
-        poolChildReference.ReturnChildToPool();
+        this.tileType = tileType;
     }
-
     public void ControlShader(bool shaderActive)
     {
-        if (shaderActive)
-        {
-            rend.material.SetFloat("_Active", 1);
-        }
-        else
-        {
-            rend.material.SetFloat("_Active", 0);
-        }        
+        rend.enabled = shaderActive;
+
     }
 }
+       

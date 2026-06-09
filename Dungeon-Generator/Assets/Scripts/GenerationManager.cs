@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GenerationManager : MonoBehaviour
 {
@@ -49,10 +50,11 @@ public class GenerationManager : MonoBehaviour
                 newTile.transform.position = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
                 generatedTiles.Add(newTile);
 
-                if (newTile.CompareTag("Destructive"))
+                if (newTile.IsDestructive())
                     continue;
 
                 TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
+
                 tileArray[x, z] = tile;
 
                 if (dataArray[x, z].destruction)
@@ -63,7 +65,6 @@ public class GenerationManager : MonoBehaviour
                 {
                     tile.ControlShader(false);
                 }
-
             }
         }
     }
@@ -97,9 +98,20 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopWall(int x, int y)
     {
-        if (tileArray[x, y + 1] != null)
+        if (tileArray[x, y + 1] == null)
+        {
+            TopWall(x,y);
+            return;
+        }
+
+        if ((int)tileArray[x, y].tileType == (int)tileArray[x, y + 1].tileType)
             return;
 
+        TopWall(x, y);
+    }
+
+    void TopWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
         poolChild.gameObject.transform.position = calculate;
@@ -111,9 +123,20 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomWall(int x, int y)
     {
-        if (tileArray[x, y - 1] != null)
+        if (tileArray[x, y - 1] == null)
+        {
+            BottomWall(x, y);
+            return;
+        }
+
+        if ((int)tileArray[x, y].tileType == (int)tileArray[x, y - 1].tileType)
             return;
 
+        BottomWall(x, y); ;
+    }
+
+    void BottomWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
         calculate.z += 1;
@@ -128,9 +151,20 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightWall(int x, int y)
     {
-        if (tileArray[x + 1, y] != null)
+        if (tileArray[x + 1, y] == null)
+        {
+            RightWall(x, y);
+            return;
+        }
+
+        if ((int)tileArray[x, y].tileType == (int)tileArray[x + 1, y].tileType)
             return;
 
+        RightWall(x, y);
+    }
+
+    void RightWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -144,9 +178,21 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftWall(int x, int y)
     {
-        if (tileArray[x - 1, y] != null)
+        if (tileArray[x - 1, y] == null)
+        {
+            LeftWall(x, y);
+            return;
+        }
+
+        if ((int)tileArray[x, y].tileType == (int)tileArray[x - 1, y].tileType)
             return;
 
+        LeftWall(x, y);              
+
+    }
+
+    void LeftWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.z += 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -377,7 +423,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.15f;
         calculate.y += 0.5f;
-        calculate.z += 0.85f;
+        calculate.z += 1;
 
         PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
         poolChild.transform.position = calculate;

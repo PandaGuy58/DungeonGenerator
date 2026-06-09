@@ -6,6 +6,6 @@ public class DungeonTile : TileMasterClass
         SetMajorColumnPool(DungeonMajorColumn.instance);
         SetMinorColumnPool(DungeonMinorColumn.instance);
         SetDoorPool(DungeonDoor.instance);
-        InitialiseTile();
+        SetTileType(TileType.Dungeon);
     }
 }

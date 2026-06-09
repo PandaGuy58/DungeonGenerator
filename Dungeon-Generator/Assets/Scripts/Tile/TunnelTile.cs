@@ -5,6 +5,6 @@ public class TunnelTile : TileMasterClass
         SetWallPool(TunnelWall.instance);
         SetMajorColumnPool(TunnelMajorColumn.instance);
         SetMinorColumnPool(TunnelMinorColumn.instance);
-        InitialiseTile();
+        SetTileType(TileType.Tunnel);
     }
 }

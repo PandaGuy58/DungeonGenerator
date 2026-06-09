@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoolChild
+  destructive: 0
 --- !u!1001 &3716755974021934054
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58,6 +59,18 @@ PrefabInstance:
       value: DungeonWallCopy
       objectReference: {fileID: 0}
     - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
       objectReference: {fileID: 0}
@@ -67,7 +80,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 4.875
       objectReference: {fileID: 0}
     - target: {fileID: 4796592812863908, guid: 72d518fd3e5ad5f408c260b8d2e92e5b, type: 3}
       propertyPath: m_LocalRotation.w

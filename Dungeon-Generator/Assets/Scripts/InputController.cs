@@ -28,7 +28,6 @@ public class InputController : MonoBehaviour
 
     private void Awake()
     {
-        //  raycastTile = tilePools[currentSelectedTilePool].RequestObject();
         string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
         UIManager.instance.UpdateText(currentPrefabName);
     }
@@ -40,7 +39,7 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionSwitch();
-            MouseInactive(true);
+            ExecuteGeneration(currentRaycastPos, currentRaycastPos);
         }
         else if(Input.GetMouseButtonDown(0))
         {
@@ -56,27 +55,8 @@ public class InputController : MonoBehaviour
         }
         else
         {
-            MouseInactive(false);
-        }
-
-        /*
-        else if (Input.GetMouseButtonDown(0))
-        {
-            MouseButtonDown();
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            MouseButton();
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            MouseButtonUp();
-        }
-        else
-        {
             MouseInactive();
         }
-        */
     }
 
     void ExecuteRaycast()
@@ -118,17 +98,7 @@ public class InputController : MonoBehaviour
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        if (currentSelectedTilePool == tilePools.Count - 1)
-        {
-            ObjectArray.instance.GenerateTemporaryArrayDestruction(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
-        }
-        else
-        {
-            ObjectArray.instance.GenerateTemporaryArray(initialRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
-        }
-
-        previousRaycastPos = currentRaycastPos;
-        GenerationManager.instance.GenerateTiles();
+        ExecuteGeneration(initialRaycastPos, currentRaycastPos);
 
     }
 
@@ -144,37 +114,26 @@ public class InputController : MonoBehaviour
         GenerationManager.instance.GenerateContents();
     }
 
-    void MouseInactive(bool force)
+    void MouseInactive()
     {
-        if (force)
-        {
-            if (currentSelectedTilePool == tilePools.Count - 1)
-            {
-                ObjectArray.instance.GenerateTemporaryArrayDestruction(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
-            }
-            else
-            {
-                ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
-            }
-                
-            GenerationManager.instance.GenerateTiles();
-            previousRaycastPos = currentRaycastPos;
-            return;
-        }
-
         if (currentRaycastPos.x == -1)
             return;
 
         if (currentRaycastPos == previousRaycastPos)
             return;
 
+        ExecuteGeneration(currentRaycastPos, currentRaycastPos);
+    }
+
+    void ExecuteGeneration(Vector3 initialTile, Vector3 currentTargetTile)
+    {
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
-            ObjectArray.instance.GenerateTemporaryArrayDestruction(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+            ObjectArray.instance.GenerateTemporaryArrayDestruction(initialTile, currentTargetTile, tilePools[currentSelectedTilePool]);
         }
         else
         {
-            ObjectArray.instance.GenerateTemporaryArray(currentRaycastPos, currentRaycastPos, tilePools[currentSelectedTilePool]);
+            ObjectArray.instance.GenerateTemporaryArray(initialTile, currentTargetTile, tilePools[currentSelectedTilePool]);
         }
 
         GenerationManager.instance.GenerateTiles();

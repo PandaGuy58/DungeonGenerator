@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: red
-  m_Shader: {fileID: -6465566751694194690, guid: aaaae4765ad15864bbb818178e57e9af, type: 3}
-  m_Parent: {fileID: 2100000, guid: e77bbb2881214f144a427d595ecd931f, type: 2}
+  m_Shader: {fileID: -6465566751694194690, guid: a2ac87e2035dcd247a337a521f17ef44, type: 3}
+  m_Parent: {fileID: 2100000, guid: 9723e49a8a7236b47bf2c92dd0f9e93e, type: 2}
   m_ModifiedSerializedProperties: 2
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -27,6 +27,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Active: 1
+    - _OffsetX: 0
+    - _OffsetXSecond: 0
+    - _OffsetY: 0
+    - _OffsetYSecond: -1.04
     m_Colors:
     - _Color: {r: 1, g: 0.05899147, b: 0, a: 1}
   m_BuildTextureStacks: []

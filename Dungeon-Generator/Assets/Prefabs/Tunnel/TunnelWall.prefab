@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoolChild
+  destructive: 0
 --- !u!1001 &6431922699766838126
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58,6 +59,10 @@ PrefabInstance:
       value: TunnelWallCopy
       objectReference: {fileID: 0}
     - target: {fileID: 4984311468265640, guid: 463e7fc88d7b5404399f69054daaa663, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4984311468265640, guid: 463e7fc88d7b5404399f69054daaa663, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5
       objectReference: {fileID: 0}
@@ -67,7 +72,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4984311468265640, guid: 463e7fc88d7b5404399f69054daaa663, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 4.875
       objectReference: {fileID: 0}
     - target: {fileID: 4984311468265640, guid: 463e7fc88d7b5404399f69054daaa663, type: 3}
       propertyPath: m_LocalRotation.w

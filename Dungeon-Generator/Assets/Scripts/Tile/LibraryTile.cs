@@ -6,7 +6,7 @@ public class LibraryTile : TileMasterClass
         SetMajorColumnPool(LibraryMajorColumn.instance);
         SetMinorColumnPool(LibraryMinorColumn.instance);
         SetDoorPool(LibraryDoor.instance);
-        InitialiseTile();
+        SetTileType(TileType.Library);
     }
 
 }
