@@ -88,30 +88,30 @@ public class GenerationManager : MonoBehaviour
                 GenerateBottomLeftCorner(x, z);
                 GenerateBottomRightCorner(x, z);
 
-                GenerateTopColumn(x, z);
-                GenerateBottomColumn(x, z);
-                GenerateLeftColumn(x, z);
-                GenerateRightColumn(x, z);
+             //   GenerateTopColumn(x, z);
+            //    GenerateBottomColumn(x, z);
+             //   GenerateLeftColumn(x, z);
+             //   GenerateRightColumn(x, z);
             }
         }
     }
 
-    void GenerateTopWall(int x, int y)
+    bool CheckTile(TileMasterClass tile, int x, int y)
     {
-        if (tileArray[x, y + 1] == null)
-        {
-            TopWall(x,y);
-            return;
-        }
+        if (tileArray[x, y] == null)
+            return false;
 
-        if ((int)tileArray[x, y].tileType == (int)tileArray[x, y + 1].tileType)
-            return;
+        if ((int)tileArray[x, y].tileType != (int)tile.tileType)
+            return false;
 
-        TopWall(x, y);
+        return true;
     }
 
-    void TopWall(int x, int y)
+    void GenerateTopWall(int x, int y)
     {
+        if (CheckTile(tileArray[x, y], x, y + 1))
+            return;
+
         Vector3 calculate = tileArray[x, y].transform.position;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
         poolChild.gameObject.transform.position = calculate;
@@ -123,20 +123,9 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomWall(int x, int y)
     {
-        if (tileArray[x, y - 1] == null)
-        {
-            BottomWall(x, y);
-            return;
-        }
-
-        if ((int)tileArray[x, y].tileType == (int)tileArray[x, y - 1].tileType)
+        if (CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        BottomWall(x, y); ;
-    }
-
-    void BottomWall(int x, int y)
-    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
         calculate.z += 1;
@@ -151,20 +140,9 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightWall(int x, int y)
     {
-        if (tileArray[x + 1, y] == null)
-        {
-            RightWall(x, y);
-            return;
-        }
-
-        if ((int)tileArray[x, y].tileType == (int)tileArray[x + 1, y].tileType)
+        if (CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        RightWall(x, y);
-    }
-
-    void RightWall(int x, int y)
-    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -178,21 +156,9 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftWall(int x, int y)
     {
-        if (tileArray[x - 1, y] == null)
-        {
-            LeftWall(x, y);
-            return;
-        }
-
-        if ((int)tileArray[x, y].tileType == (int)tileArray[x - 1, y].tileType)
+        if (CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        LeftWall(x, y);              
-
-    }
-
-    void LeftWall(int x, int y)
-    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.z += 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -209,7 +175,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (tileArray[x, y + 1] == null && tileArray[x - 1, y] == null)
+        if(!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x - 1, y))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.85f;
@@ -222,19 +188,19 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        if (tileArray[x - 1, y + 1] != null)
+        if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (tileArray[x, y + 1] == null)
+        if (!CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        if (tileArray[x - 1, y] == null)
+        if (CheckTile(tileArray[x, y], x - 1, y + 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
-        calculate.x -= 1;
+        calculate.x -= 0.85f;
         calculate.y += 0.5f;
-        calculate.z += 1f;
+        calculate.z += 0.85f;
 
         poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
@@ -246,7 +212,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (tileArray[x, y + 1] == null && tileArray[x + 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x + 1, y))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.15f;
@@ -259,32 +225,32 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        if (tileArray[x + 1, y + 1] != null)
+        if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (tileArray[x + 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (tileArray[x, y + 1] == null)
+        if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
+        calculate.x -= 0.15f;
         calculate.y += 0.5f;
-        calculate.z += 1;
+        calculate.z += 0.85f;
 
         poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         poolChild.transform.position = calculate;
         contents.Add(poolChild);
     }
 
-
     void GenerateBottomLeftCorner(int x, int y)
     {
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (tileArray[x - 1, y] == null && tileArray[x, y - 1] == null)
-        {
+        if (!CheckTile(tileArray[x, y], x - 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
+        { 
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.85f;
             calculate.y += 0.5f;
@@ -296,13 +262,13 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        if (tileArray[x - 1, y - 1] != null)
+        if (!CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (tileArray[x - 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        if (tileArray[x, y - 1] == null)
+        if (CheckTile(tileArray[x, y], x - 1, y - 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
@@ -319,7 +285,8 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (tileArray[x + 1, y] == null && tileArray[x, y - 1] == null)
+
+        if (!CheckTile(tileArray[x, y], x + 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.15f;
@@ -331,13 +298,13 @@ public class GenerationManager : MonoBehaviour
             contents.Add(poolChild);
         }
 
-        if (tileArray[x + 1, y - 1] != null)
+        if (!CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (tileArray[x + 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (tileArray[x, y - 1] == null)
+        if (CheckTile(tileArray[x, y], x + 1, y - 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
