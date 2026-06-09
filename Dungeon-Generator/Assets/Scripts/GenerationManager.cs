@@ -88,10 +88,10 @@ public class GenerationManager : MonoBehaviour
                 GenerateBottomLeftCorner(x, z);
                 GenerateBottomRightCorner(x, z);
 
-             //   GenerateTopColumn(x, z);
-            //    GenerateBottomColumn(x, z);
-             //   GenerateLeftColumn(x, z);
-             //   GenerateRightColumn(x, z);
+                GenerateTopColumn(x, z);
+                GenerateBottomColumn(x, z);
+                GenerateLeftColumn(x, z);
+                GenerateRightColumn(x, z);
             }
         }
     }
@@ -261,7 +261,7 @@ public class GenerationManager : MonoBehaviour
             contents.Add(poolChild);
             return;
         }
-
+        
         if (!CheckTile(tileArray[x, y], x, y - 1))
             return;
 
@@ -284,7 +284,6 @@ public class GenerationManager : MonoBehaviour
     {
         Vector3 calculate;
         PoolChild poolChild;
-
 
         if (!CheckTile(tileArray[x, y], x + 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
         {
@@ -317,13 +316,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopColumn(int x, int y)
     {
-        if (tileArray[x, y + 1] != null)
+        if (CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (tileArray[x + 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (tileArray[x + 1, y + 1] != null)
+        if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -337,13 +336,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomColumn(int x, int y)
     {
-        if (tileArray[x, y - 1] != null)
+        if (CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (tileArray[x + 1, y] == null)
+        if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (tileArray[x + 1, y - 1] != null)
+        if (CheckTile(tileArray[x, y], x + 1, y - 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -357,13 +356,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftColumn(int x, int y)
     {
-        if (tileArray[x - 1, y] != null)
+        if (CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        if (tileArray[x, y + 1] == null)
+        if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (tileArray[x - 1, y + 1] != null)
+        if (CheckTile(tileArray[x, y], x - 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -378,13 +377,14 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightColumn(int x, int y)
     {
-        if (tileArray[x + 1, y] != null)
+
+        if (CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (tileArray[x, y + 1] == null)
+        if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (tileArray[x + 1, y + 1] != null)
+        if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;

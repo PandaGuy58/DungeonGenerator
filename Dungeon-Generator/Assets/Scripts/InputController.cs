@@ -16,7 +16,7 @@ public class InputController : MonoBehaviour
 
     // core values to determine where to place tiles
     Vector3 initialRaycastPos;
-    [SerializeField] Vector3 currentRaycastPos;
+    Vector3 currentRaycastPos;
     Vector3 previousRaycastPos;
 
     // temporary tiles stored in a list
