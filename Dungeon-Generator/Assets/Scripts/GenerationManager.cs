@@ -41,15 +41,15 @@ public class GenerationManager : MonoBehaviour
                 GenerateRightWall(x, z);
                 GenerateLeftWall(x, z);
 
-                GenerateTopLeftCorner(x, z);
-                GenerateTopRightCorner(x, z);
-                GenerateBottomLeftCorner(x, z);
-                GenerateBottomRightCorner(x, z);
+           //     GenerateTopLeftCorner(x, z);
+            //    GenerateTopRightCorner(x, z);
+            //    GenerateBottomLeftCorner(x, z);
+            //    GenerateBottomRightCorner(x, z);
 
-                GenerateTopColumn(x, z);
-                GenerateBottomColumn(x, z);
-                GenerateLeftColumn(x, z);
-                GenerateRightColumn(x, z);
+           //     GenerateTopColumn(x, z);
+           //     GenerateBottomColumn(x, z);
+            //    GenerateLeftColumn(x, z);
+            //    GenerateRightColumn(x, z);
             }
         }
     }
@@ -95,24 +95,46 @@ public class GenerationManager : MonoBehaviour
             }
         }
     }
+    /*
+    bool CheckTileNull(int x, int y)
+    {
+        if ((tileArray[x, y]) == null)
+            return true;
 
+        return false;
+    }
 
-    bool CheckTile(TileMasterClass tile, int x, int y)
+    TileType CheckTile(int x, int y)
     {
         if (tileArray[x, y] == null)
-            return false;
+            return TileType.Null;
 
-        if ((int)tileArray[x, y].tileType != (int)tile.tileType)
-            return false;
-
-        return true;
+        return tileArray[x, y].tileType;
     }
+    */
 
     void GenerateTopWall(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x, y + 1))
+        if (tileArray[x, y + 1] == null)
+        {
+            TopWall(x, y);
+            return;
+        }
+
+        if (tileArray[x, y].tileType == tileArray[x, y + 1].tileType)
             return;
 
+        if (tileArray[x, y].tileType == TileType.Tunnel)
+            return;
+
+        if (tileArray[x, y + 1].tileType == TileType.Tunnel)
+            return;
+
+        TopWall(x, y);
+    }
+
+    void TopWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
         poolChild.gameObject.transform.position = calculate;
@@ -124,8 +146,26 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomWall(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x, y - 1))
+        if (tileArray[x, y - 1] == null)
+        {
+            BottomWall(x, y);
             return;
+        }
+
+        if (tileArray[x, y].tileType == tileArray[x, y - 1].tileType)
+            return;
+
+        if (tileArray[x, y].tileType == TileType.Tunnel)
+            return;
+
+        if (tileArray[x, y - 1].tileType == TileType.Tunnel)
+            return;
+
+        BottomWall(x, y);
+    }
+
+    void BottomWall(int x, int y)
+    {
 
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
@@ -141,9 +181,26 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightWall(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x + 1, y))
+        if (tileArray[x + 1, y] == null)
+        {
+            RightWall(x, y);
+            return;
+        }
+
+        if (tileArray[x, y].tileType == tileArray[x + 1, y].tileType)
             return;
 
+        if (tileArray[x, y].tileType == TileType.Tunnel)
+            return;
+
+        if (tileArray[x + 1, y].tileType == TileType.Tunnel)
+            return;
+
+        RightWall(x, y);
+    }
+
+    void RightWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.x -= 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -157,9 +214,26 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftWall(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x - 1, y))
+        if (tileArray[x - 1, y] == null)
+        {
+            LeftWall(x, y);
+            return;
+        }
+
+        if (tileArray[x, y].tileType == tileArray[x - 1, y].tileType)
             return;
 
+        if (tileArray[x, y].tileType == TileType.Tunnel)
+            return;
+
+        if (tileArray[x - 1, y].tileType == TileType.Tunnel)
+            return;
+
+        LeftWall(x, y);
+    }
+
+    void LeftWall(int x, int y)
+    {
         Vector3 calculate = tileArray[x, y].transform.position;
         calculate.z += 1;
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
@@ -176,7 +250,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if(!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x - 1, y))
+     //   if(!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x - 1, y))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.85f;
@@ -189,6 +263,7 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
+        /*
         if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
@@ -197,6 +272,7 @@ public class GenerationManager : MonoBehaviour
 
         if (CheckTile(tileArray[x, y], x - 1, y + 1))
             return;
+        */
 
         calculate = tileArray[x, y].transform.position;
         calculate.x -= 0.85f;
@@ -213,7 +289,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x + 1, y))
+      //  if (!CheckTile(tileArray[x, y], x, y + 1) && !CheckTile(tileArray[x, y], x + 1, y))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.15f;
@@ -226,13 +302,13 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        if (!CheckTile(tileArray[x, y], x, y + 1))
+    //    if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (!CheckTile(tileArray[x, y], x + 1, y))
+     //   if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (CheckTile(tileArray[x, y], x + 1, y + 1))
+    //    if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
@@ -250,7 +326,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (!CheckTile(tileArray[x, y], x - 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
+     //   if (!CheckTile(tileArray[x, y], x - 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
         { 
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.85f;
@@ -263,13 +339,13 @@ public class GenerationManager : MonoBehaviour
             return;
         }
         
-        if (!CheckTile(tileArray[x, y], x, y - 1))
+    //    if (!CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (!CheckTile(tileArray[x, y], x - 1, y))
+    //    if (!CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        if (CheckTile(tileArray[x, y], x - 1, y - 1))
+     //   if (CheckTile(tileArray[x, y], x - 1, y - 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
@@ -286,7 +362,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 calculate;
         PoolChild poolChild;
 
-        if (!CheckTile(tileArray[x, y], x + 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
+     //   if (!CheckTile(tileArray[x, y], x + 1, y) && !CheckTile(tileArray[x, y], x, y - 1))
         {
             calculate = tileArray[x, y].transform.position;
             calculate.x -= 0.15f;
@@ -299,13 +375,13 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        if (!CheckTile(tileArray[x, y], x, y - 1))
+     //   if (!CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (!CheckTile(tileArray[x, y], x + 1, y))
+   //     if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (CheckTile(tileArray[x, y], x + 1, y - 1))
+  //      if (CheckTile(tileArray[x, y], x + 1, y - 1))
             return;
 
         calculate = tileArray[x, y].transform.position;
@@ -318,13 +394,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateTopColumn(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x, y + 1))
+ //       if (CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (!CheckTile(tileArray[x, y], x + 1, y))
+ //       if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (CheckTile(tileArray[x, y], x + 1, y + 1))
+  //      if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -338,13 +414,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateBottomColumn(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x, y - 1))
+   //     if (CheckTile(tileArray[x, y], x, y - 1))
             return;
 
-        if (!CheckTile(tileArray[x, y], x + 1, y))
+ //       if (!CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (CheckTile(tileArray[x, y], x + 1, y - 1))
+ //       if (CheckTile(tileArray[x, y], x + 1, y - 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -358,13 +434,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateLeftColumn(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x - 1, y))
+ //       if (CheckTile(tileArray[x, y], x - 1, y))
             return;
 
-        if (!CheckTile(tileArray[x, y], x, y + 1))
+   //     if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (CheckTile(tileArray[x, y], x - 1, y + 1))
+  //      if (CheckTile(tileArray[x, y], x - 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -379,13 +455,13 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightColumn(int x, int y)
     {
-        if (CheckTile(tileArray[x, y], x + 1, y))
+   //     if (CheckTile(tileArray[x, y], x + 1, y))
             return;
 
-        if (!CheckTile(tileArray[x, y], x, y + 1))
+    //    if (!CheckTile(tileArray[x, y], x, y + 1))
             return;
 
-        if (CheckTile(tileArray[x, y], x + 1, y + 1))
+     //   if (CheckTile(tileArray[x, y], x + 1, y + 1))
             return;
 
         Vector3 calculate = tileArray[x, y].transform.position;
