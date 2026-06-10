@@ -107,7 +107,7 @@ public class InputController : MonoBehaviour
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
             ObjectArray.instance.RemoveFromArray();
-            GenerationManager.instance.GenerateTiles();
+            GenerationManager.instance.RegenerateTiles();
         }
 
         ObjectArray.instance.FinalisePoolArray();
@@ -136,7 +136,7 @@ public class InputController : MonoBehaviour
             ObjectArray.instance.GenerateTemporaryArray(initialTile, currentTargetTile, tilePools[currentSelectedTilePool]);
         }
 
-        GenerationManager.instance.GenerateTiles();
+        GenerationManager.instance.RegenerateTiles();
         previousRaycastPos = currentRaycastPos;
     }
 }

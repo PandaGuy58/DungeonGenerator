@@ -15,7 +15,7 @@ public class GenerationManager : MonoBehaviour
         instance = this;
     }
 
-    public void GenerateTiles()
+    public void RegenerateTiles()
     {
         GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
         ReturnToPool(generatedTiles);
@@ -25,6 +25,33 @@ public class GenerationManager : MonoBehaviour
     public void DisableContents()
     {
         ReturnToPool(contents);
+    }
+
+    public void GenerateContents()
+    {
+        for (int x = 0; x < tileArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < tileArray.GetLength(1); z++)
+            {
+                if (tileArray[x, z] == null)
+                    continue;
+
+                GenerateTopWall(x, z);
+                GenerateBottomWall(x, z);
+                GenerateRightWall(x, z);
+                GenerateLeftWall(x, z);
+
+                GenerateTopLeftCorner(x, z);
+                GenerateTopRightCorner(x, z);
+                GenerateBottomLeftCorner(x, z);
+                GenerateBottomRightCorner(x, z);
+
+                GenerateTopColumn(x, z);
+                GenerateBottomColumn(x, z);
+                GenerateLeftColumn(x, z);
+                GenerateRightColumn(x, z);
+            }
+        }
     }
 
     void ReturnToPool(List<PoolChild> poolChildList)
@@ -69,32 +96,6 @@ public class GenerationManager : MonoBehaviour
         }
     }
 
-    public void GenerateContents()
-    {
-        for (int x = 0; x < tileArray.GetLength(0); x++)
-        {
-            for (int z = 0; z < tileArray.GetLength(1); z++)
-            {
-                if (tileArray[x, z] == null)
-                    continue;
-
-                GenerateTopWall(x, z);
-                GenerateBottomWall(x, z);
-                GenerateRightWall(x, z);
-                GenerateLeftWall(x, z);
-
-                GenerateTopLeftCorner(x, z);
-                GenerateTopRightCorner(x, z);
-                GenerateBottomLeftCorner(x, z);
-                GenerateBottomRightCorner(x, z);
-
-                GenerateTopColumn(x, z);
-                GenerateBottomColumn(x, z);
-                GenerateLeftColumn(x, z);
-                GenerateRightColumn(x, z);
-            }
-        }
-    }
 
     bool CheckTile(TileMasterClass tile, int x, int y)
     {
@@ -295,6 +296,7 @@ public class GenerationManager : MonoBehaviour
             poolChild = tileArray[x, y].majorColumnPool.RequestObject();
             poolChild.transform.position = calculate;
             contents.Add(poolChild);
+            return;
         }
 
         if (!CheckTile(tileArray[x, y], x, y - 1))
@@ -377,7 +379,6 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateRightColumn(int x, int y)
     {
-
         if (CheckTile(tileArray[x, y], x + 1, y))
             return;
 
