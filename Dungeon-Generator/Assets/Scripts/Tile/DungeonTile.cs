@@ -5,7 +5,6 @@ public class DungeonTile : TileMasterClass
         SetWallPool(DungeonWall.instance);
         SetMajorColumnPool(DungeonMajorColumn.instance);
         SetMinorColumnPool(DungeonMinorColumn.instance);
-        SetDoorPool(DungeonDoor.instance);
         SetTileType(TileType.Dungeon);
     }
 }

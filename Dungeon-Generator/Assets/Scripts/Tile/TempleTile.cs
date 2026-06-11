@@ -5,7 +5,6 @@ public class TempleTile : TileMasterClass
         SetWallPool(TempleWall.instance);
         SetMajorColumnPool(TempleMajorColumn.instance);
         SetMinorColumnPool(TempleMinorColumn.instance);
-        SetDoorPool(TempleDoor.instance);
         SetTileType(TileType.Temple);
     }
 }
