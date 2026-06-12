@@ -6,7 +6,8 @@ public enum TileType
     Dungeon,
     Library,
     Temple,
-    Tunnel
+    Tunnel,
+    Null
 }
 
 public class TileMasterClass : MonoBehaviour

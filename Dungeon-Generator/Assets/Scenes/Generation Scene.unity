@@ -1780,7 +1780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98d896f3b8dc5f44aab696be19e2282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWall
-  prefab: {fileID: 1796780319832058, guid: 03495b62119de3d4dac9c038cc589fc9, type: 3}
+  prefab: {fileID: 2946003020603589757, guid: 863ae5f5bd8a03f428e3602b96664967, type: 3}
 --- !u!4 &1531792889
 Transform:
   m_ObjectHideFlags: 0
