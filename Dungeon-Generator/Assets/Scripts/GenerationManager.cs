@@ -28,38 +28,8 @@ public class GenerationManager : MonoBehaviour
 
     public void GenerateContents()
     {
-        for (int x = 0; x < tileArray.GetLength(0); x++)
-        {
-            for (int z = 0; z < tileArray.GetLength(1); z++)
-            {
-                if (tileArray[x, z] == null)
-                    continue;
-
-                GenerateTopWall(x, z);
-                GenerateBottomWall(x, z);
-                GenerateRightWall(x, z);
-                GenerateLeftWall(x, z);
-
-             //   GenerateTopLeftCorner(x, z);
-            //    GenerateTopRightCorner(x, z);
-            //    GenerateBottomLeftCorner(x, z);
-            //    GenerateBottomRightCorner(x, z);
-
-           //     GenerateTopColumn(x, z);
-           //     GenerateBottomColumn(x, z);
-            //    GenerateLeftColumn(x, z);
-            //    GenerateRightColumn(x, z);
-            }
-        }
-    }
-
-    void ReturnToPool(List<PoolChild> poolChildList)
-    {
-        for (int i = 0; i < poolChildList.Count; i++)
-        {
-            poolChildList[i].ReturnChildToPool();
-        }
-        poolChildList.Clear();
+        GenerateWalls();
+        GenerateColumns();
     }
 
     void GenerateTiles(GenerationData[,] dataArray)
@@ -80,6 +50,8 @@ public class GenerationManager : MonoBehaviour
                     continue;
 
                 TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
+                tile.ResetWallsColumns();
+                tile.SetXY(x, z);
 
                 tileArray[x, z] = tile;
 
@@ -94,6 +66,65 @@ public class GenerationManager : MonoBehaviour
             }
         }
     }
+
+    void GenerateWalls()
+    {
+        for (int x = 0; x < tileArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < tileArray.GetLength(1); z++)
+            {
+                if (tileArray[x, z] == null)
+                {
+                    continue;
+                }
+
+                GenerateTopWall(x, z);
+                GenerateBottomWall(x, z);
+                GenerateRightWall(x, z);
+                GenerateLeftWall(x, z);
+            }
+        }
+    }
+
+    void GenerateColumns()
+    {
+        for (int x = 0; x < tileArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < tileArray.GetLength(1); z++)
+            {
+                if (tileArray[x, z] == null)
+                {
+                    continue;
+                }
+
+                GenerateTopLeftCorner(x, z);
+                GenerateBottomRightCorner(x, z);
+                GenerateTopRightCorner(x, z);
+                GenerateBottomLeftCorner(x, z);
+
+
+                //    GenerateTopLeftMinorColumn(x, z);
+                //    GenerateTopRightMinorColumn(x, z);
+                //       GenerateBottomRightMinorColumn(x, z); 
+                //   GenerateBottomLeftMinorColumn(x, z);
+
+                //    GenerateTopLeftMajorColumn(x, z);
+                //    GenerateTopRightMajorColumn(x, z);
+                //     GenerateBottomLeftMajorColumn(x, z);
+                //    GenerateBottomRightMajorColumn(x, z);
+            }
+        }
+    }
+
+    void ReturnToPool(List<PoolChild> poolChildList)
+    {
+        for (int i = 0; i < poolChildList.Count; i++)
+        {
+            poolChildList[i].ReturnChildToPool();
+        }
+        poolChildList.Clear();
+    }
+
     void PlaceObject(PoolChild poolChild, Vector3 position, int x, int y)
     {
         Vector3 calculate = tileArray[x, y].transform.position;
@@ -136,6 +167,7 @@ public class GenerationManager : MonoBehaviour
         PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
         Vector3 calculate = Vector3.zero;
         PlaceObjectRotate(poolChild, calculate, calculate, x, y);
+        tileArray[x, y].SetTopWall();
     }
 
     void GenerateBottomWall(int x, int y)
@@ -164,6 +196,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 position = new Vector3(-1, 0, +1);
         Vector3 rotation = new Vector3(0, 180, 0);
         PlaceObjectRotate(poolChild, position, rotation, x, y);
+        tileArray[x, y].SetBottomWall();
     }
 
     void GenerateRightWall(int x, int y)
@@ -192,6 +225,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 position = new Vector3(-1, 0, 0);
         Vector3 rotation = new Vector3(0, 90, 0);
         PlaceObjectRotate(poolChild, position, rotation, x, y);
+        tileArray[x, y].SetRightWall();
     }
 
     void GenerateLeftWall(int x, int y)
@@ -220,7 +254,322 @@ public class GenerationManager : MonoBehaviour
         Vector3 position = new Vector3(0, 0, 1);
         Vector3 rotation = new Vector3(0, -90, 0);
         PlaceObjectRotate(poolChild, position, rotation, x, y);
+        tileArray[x, y].SetLeftWall();
     }
+
+    void GenerateTopLeftCorner(int x, int y)
+    {
+        if (!tileArray[x, y].leftWall)
+            return;
+
+        if (!tileArray[x, y].topWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-0.85f, 0.5f, 0.85f);
+        PlaceObject(poolChild, position, x, y);
+        tileArray[x, y].topLeftColumn = true;
+    }
+
+    void GenerateTopRightCorner(int x, int y)
+    {
+        if (!tileArray[x, y].rightWall)
+            return;
+
+        if (!tileArray[x, y].topWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-0.075f, 0.5f, 0.925f);
+        PlaceObject(poolChild, position, x, y);
+        tileArray[x, y].topRightColumn = true;
+    }
+
+    void GenerateBottomLeftCorner(int x, int y)
+    {
+        if (!tileArray[x, y].leftWall)
+            return;
+
+        if (!tileArray[x, y].bottomWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-0.85f, 0.5f, 0.15f);
+        PlaceObject(poolChild, position, x, y);
+        tileArray[x, y].bottomLeftColumn = true;
+    }
+
+    void GenerateBottomRightCorner(int x, int y)
+    {
+        if (!tileArray[x, y].rightWall)
+            return;
+
+        if (!tileArray[x, y].bottomWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-0.15f, 0.5f, 0.15f);
+        PlaceObject(poolChild, position, x, y);
+        tileArray[x, y].bottomRightColumn = true;
+    }
+}
+
+
+    /*
+
+    void GenerateTopLeftMinorColumn(int x, int y)
+    {
+        if (tileArray[x - 1, y] == null)
+            return;
+
+        if (tileArray[x - 1, y].topWall)
+        {
+            PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-1, 0.5f, 0.85f);
+            PlaceObject(poolChild, position, x, y);
+            tileArray[x, y].topLeftColumn = true;
+        }
+    }
+
+    void GenerateTopRightMinorColumn(int x, int y)
+    {
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        if (tileArray[x, y + 1].rightWall)
+        {
+            PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.15f, 0.5f, 0.85f);
+            PlaceObject(poolChild, position, x, y);
+            tileArray[x, y].topRightColumn = true;
+        }
+    }
+
+    void GenerateBottomRightMinorColumn(int x, int y)
+    {
+        if (tileArray[x + 1, y] == null)
+            return;
+
+        if (tileArray[x + 1, y].bottomWall)
+        {
+            PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
+            Vector3 position = new Vector3(0, 0.5f, 0.15f);
+            PlaceObject(poolChild, position, x, y);
+            tileArray[x, y].bottomRightColumn = true;
+        }
+    }
+
+    void GenerateBottomLeftMinorColumn(int x, int y)
+    {
+        if (tileArray[x, y - 1] == null)
+            return;
+
+        if (tileArray[x, y - 1].leftWall)
+        {
+            PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.85f, 0.5f, 0);
+            PlaceObject(poolChild, position, x, y);
+            tileArray[x, y].bottomLeftColumn = true;
+        }
+    }
+
+
+    void GenerateTopLeftMajorColumn(int x, int y)
+    {
+        if (tileArray[x, y].topLeftColumn)
+            return;
+
+        if (tileArray[x, y].topWall && tileArray[x, y].leftWall)
+        {
+            PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.85f, 0.5f, 0.85f);
+            PlaceObject(poolChild, position, x, y);
+            return;
+        }
+
+        if (tileArray[x - 1, y] != null && tileArray[x, y + 1] != null)
+        {
+            if (tileArray[x - 1, y].topWall && tileArray[x, y + 1].leftWall)
+            {
+                PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+                Vector3 position = new Vector3(-0.925f, 0.5f, 0.925f);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+
+    void GenerateTopRightMajorColumn(int x, int y)
+    {
+        if (tileArray[x, y].topRightColumn)
+            return;
+
+
+        if (tileArray[x, y].topWall && tileArray[x, y].rightWall)
+        {
+            PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.075f, 0.5f, 0.925f);
+            PlaceObject(poolChild, position, x, y);
+            return;
+        }
+
+        if (tileArray[x, y + 1] != null && tileArray[x + 1, y] != null)
+        {
+            if (tileArray[x, y + 1].rightWall && tileArray[x + 1, y].topWall)
+            {
+                PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+                Vector3 position = new Vector3(-0.075f, 0.5f, 0.925f);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+
+        /*
+        if (tileArray[x, y + 1] != null)
+        {
+            if (tileArray[x, y + 1].rightWall)
+            {
+                PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+                Vector3 position = new Vector3(-0.15f, 0.5f, 1);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+  
+    
+
+
+    void GenerateBottomLeftMajorColumn(int x, int y)
+    {
+        if (tileArray[x, y].bottomLeftColumn)
+            return;
+
+        if (tileArray[x, y].bottomWall && tileArray[x, y].leftWall)
+        {
+            PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.85f, 0.5f, 0.15f);
+            PlaceObject(poolChild, position, x, y);
+            return;
+        }
+
+        if (tileArray[x - 1, y] != null && tileArray[x, y - 1] != null)
+        {
+            if (tileArray[x - 1, y].bottomWall && tileArray[x, y - 1].leftWall)
+            {
+                PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+                Vector3 position = new Vector3(-0.925f, 0.5f, 0.075f);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+
+    void GenerateBottomRightMajorColumn(int x, int y)
+    {
+        if (tileArray[x, y].bottomRightColumn)
+            return;
+
+        if (tileArray[x, y].bottomWall && tileArray[x, y].rightWall)
+        {
+            PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+            Vector3 position = new Vector3(-0.15f, 0.5f, 0.15f);
+            PlaceObject(poolChild, position, x, y);
+            return;
+        }
+
+        if (tileArray[x + 1, y] != null && tileArray[x, y - 1] != null)
+        {
+            if (tileArray[x + 1, y].bottomWall && tileArray[x, y - 1].rightWall)
+            {
+                PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+                Vector3 position = new Vector3(-0.075f, 0.5f, 0.075f);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+}
+
+
+
+
+    */
+
+
+
+
+
+
+
+        /*
+        if (tileArray[x + 1, y] != null)
+        {
+            if (tileArray[x + 1, y].bottomWall)
+            {
+                PoolChild poolChild = tileArray[x, y].minorColumnPool.RequestObject();
+                Vector3 position = new Vector3(0, 0.5f, 0.15f);
+                PlaceObject(poolChild, position, x, y);
+                return;
+            }
+        }
+    }
+}
+
+        */
+
+
+
+/*
+
+
+
+
+    //   Debug.Log(tileArray[x - 1, y].topWall + " " + Time.time);
+    //      Debug.Log(tileArray[x, y + 1].leftWall + " " + Time.time);  
+    //     if (tileArray[x - 1, y].topWall && tileArray[x, y + 1].leftWall)
+    //   {
+    //     Debug.Log(Time.time);
+    //     PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+    //////     Vector3 position = new Vector3(-0.85f, 0.5f, 0.85f);
+    //    PlaceObject(poolChild, position, x, y);
+    //    return;
+    // }
+
+    /*
+     *      calculate = tileArray[x, y].transform.position;
+     calculate.x -= 0.85f;
+     calculate.y += 0.5f;
+     calculate.z += 0.85f;
+
+     poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+     poolChild.transform.position = calculate;
+     contents.Add(poolChild);
+     return;
+    */
+
+    /*
+    if (tileArray[x, y].tileType == TileType.Tunnel)
+    {
+
+    }
+    else
+    {
+
+    }
+}
+
+void TopLeftTunnelColumn(int x, int y)
+{
+
+}
+
+void TopLeftRegularColumn(int x, int y)
+{
+
+}
+
 
     bool CheckNullOrDifferentTile(TileMasterClass tile, int x, int y)
     {
@@ -236,35 +585,9 @@ public class GenerationManager : MonoBehaviour
         return false;
     }
 
-    bool CheckSameTile(TileMasterClass tile, int x, int y)
-    {
-        if (tileArray[x, y] == null)
-            return false;
 
-        if (tile.tileType == tileArray[x, y].tileType)
-            return true;
 
-        return false;
-    }
 
-    TileType CheckTileType(int x, int y)
-    {
-        if (tileArray[x, y] == null)
-            return TileType.Null;
-
-        return tileArray[x, y].tileType;
-    }
-
-    bool TunnelOrNull(TileType type)
-    {
-        if (type == TileType.Null)
-            return true;
-
-        if (type == TileType.Tunnel)
-            return true;
-
-        return false;
-    }
 
     void GenerateTopLeftCorner(int x, int y)
     {
@@ -289,7 +612,7 @@ public class GenerationManager : MonoBehaviour
 
 
 
-    /* 
+
 
   if(tileArray[x, y + 1] == null && tileArray[x - 1, y] == null)
   {
@@ -334,7 +657,40 @@ public class GenerationManager : MonoBehaviour
  poolChild = tileArray[x, y].majorColumnPool.RequestObject();
  poolChild.transform.position = calculate;
  contents.Add(poolChild);
-    */
+ 
+
+
+
+
+    bool CheckSameTile(TileMasterClass tile, int x, int y)
+    {
+        if (tileArray[x, y] == null)
+            return false;
+
+        if (tile.tileType == tileArray[x, y].tileType)
+            return true;
+
+        return false;
+    }
+
+    TileType CheckTileType(int x, int y)
+    {
+        if (tileArray[x, y] == null)
+            return TileType.Null;
+
+        return tileArray[x, y].tileType;
+    }
+
+    bool TunnelOrNull(TileType type)
+    {
+        if (type == TileType.Null)
+            return true;
+
+        if (type == TileType.Tunnel)
+            return true;
+
+        return false;
+    }
 
 
     void TunnelTopLeftCorner(int x, int y)
@@ -370,7 +726,7 @@ public class GenerationManager : MonoBehaviour
         }
 
     }
-        /*
+       
         if (typeOne == TileType.Null || typeTwo == TileType.Null)
             return;
 
@@ -381,7 +737,7 @@ public class GenerationManager : MonoBehaviour
             return;
         }
     }
-        */
+       
 
     void GenericTopLeftCorner(int x, int y)
     {
@@ -638,3 +994,4 @@ public class GenerationManager : MonoBehaviour
 
 
 
+*/
