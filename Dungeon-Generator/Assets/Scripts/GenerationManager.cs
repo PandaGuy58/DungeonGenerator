@@ -30,6 +30,8 @@ public class GenerationManager : MonoBehaviour
     {
         GenerateWalls();
 
+        GenerateWallSplits();
+
         GenerateOutsideCorners();
         GenerateInnerCorners();
 
@@ -90,6 +92,28 @@ public class GenerationManager : MonoBehaviour
         }
     }
 
+    void GenerateWallSplits()
+    {
+        for (int x = 0; x < tileArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < tileArray.GetLength(1); z++)
+            {
+                if (tileArray[x, z] == null)
+                {
+                    continue;
+                }
+
+                if (tileArray[x, z].tileType != TileType.Tunnel)
+                    continue;
+
+                TopLeftWallSplit(x, z);
+                TopRightWallSplit(x, z);
+                BottomLeftWallSplit(x, z);
+                BottomRightWallSplit(x, z);
+            }
+        }
+    }
+
     void GenerateOutsideCorners()
     {
         for (int x = 0; x < tileArray.GetLength(0); x++)
@@ -146,35 +170,6 @@ public class GenerationManager : MonoBehaviour
             }
         }
     }
-    /*
-
-    GenerateTopLeftInnerCorner(x, z);
-                GenerateTopRightInnerCorner(x, z);
-                GenerateBottomLeftInnerCorner(x, z);
-                GenerateBottomRightInnerCorner(x, z);
-
-                GenerateTopLeftColumn(x, z);
-                GenerateTopRightColumn(x, z);
-                GenerateBottomLeftColumn(x, z);
-                GenerateBottomRightColumn(x, z);
-
-    */
-
-
-
-
-
-
-    //    GenerateTopLeftMinorColumn(x, z);
-    //    GenerateTopRightMinorColumn(x, z);
-    //       GenerateBottomRightMinorColumn(x, z); 
-    //   GenerateBottomLeftMinorColumn(x, z);
-
-    //    GenerateTopLeftMajorColumn(x, z);
-    //    GenerateTopRightMajorColumn(x, z);
-    //     GenerateBottomLeftMajorColumn(x, z);
-    //    GenerateBottomRightMajorColumn(x, z);
-
 
     void ReturnToPool(List<PoolChild> poolChildList)
     {
@@ -315,6 +310,128 @@ public class GenerationManager : MonoBehaviour
         Vector3 rotation = new Vector3(0, -90, 0);
         PlaceObjectRotate(poolChild, position, rotation, x, y);
         tileArray[x, y].SetLeftWall();
+    }
+
+    void TopLeftWallSplit(int x, int y)
+    {
+        if (tileArray[x - 1, y] == null)
+            return;
+
+        if (tileArray[x - 1, y].tileType != TileType.Tunnel)
+            return;
+
+        if (tileArray[x - 1, y + 1] == null)
+            return;
+
+        if (!tileArray[x - 1, y + 1].rightWall)
+            return;
+
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        if (!tileArray[x, y + 1].leftWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-1f, 0.5f, 1f);
+        PlaceObject(poolChild, position, x, y);
+
+        tileArray[x, y].topLeftColumn = true;
+        tileArray[x - 1, y].topRightColumn = true;
+        tileArray[x - 1, y + 1].bottomRightColumn = true;
+        tileArray[x, y + 1].bottomLeftColumn = true;
+
+    }
+
+    void TopRightWallSplit(int x, int y)
+    {
+        if (tileArray[x, y + 1] == null)
+            return;
+
+        if (tileArray[x, y + 1].tileType != TileType.Tunnel)
+            return;
+
+        if (tileArray[x + 1, y + 1] == null)
+            return;
+
+        if (!tileArray[x + 1, y + 1].bottomWall)
+            return;
+
+        if (tileArray[x + 1, y] == null)
+            return;
+
+        if (!tileArray[x + 1, y].topWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(0, 0.5f, 1f);
+        PlaceObject(poolChild, position, x, y);
+
+        tileArray[x, y].topRightColumn = true;
+        tileArray[x, y + 1].bottomRightColumn = true;
+        tileArray[x + 1, y].topLeftColumn = true;
+        tileArray[x + 1, y + 1].bottomLeftColumn = true;
+    }
+
+    void BottomLeftWallSplit(int x, int y)
+    {
+        if (tileArray[x, y - 1] == null)
+            return;
+
+        if (tileArray[x, y - 1].tileType != TileType.Tunnel)
+            return;
+
+        if (tileArray[x - 1, y] == null)
+            return;
+
+        if (!tileArray[x - 1, y].bottomWall)
+            return;
+
+        if (tileArray[x - 1, y - 1] == null)
+            return;
+
+        if (!tileArray[x - 1, y - 1].topWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(-1, 0.5f, 0);
+        PlaceObject(poolChild, position, x, y);
+
+        tileArray[x, y].bottomLeftColumn = true;
+        tileArray[x, y - 1].topLeftColumn = true;
+        tileArray[x - 1, y].bottomRightColumn = true;
+        tileArray[x - 1, y - 1].topRightColumn = true;
+
+    }
+
+    void BottomRightWallSplit(int x, int y)
+    {
+        if (tileArray[x + 1, y] == null)
+            return;
+
+        if (tileArray[x + 1, y].tileType != TileType.Tunnel)
+            return;
+
+        if (tileArray[x + 1, y - 1] == null)
+            return;
+
+        if (!tileArray[x + 1, y - 1].leftWall)
+            return;
+
+        if (tileArray[x, y - 1] == null)
+            return;
+
+        if (!tileArray[x, y - 1].rightWall)
+            return;
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        Vector3 position = new Vector3(0, 0.5f, 0);
+        PlaceObject(poolChild, position, x, y);
+
+        tileArray[x, y].bottomRightColumn = true;
+        tileArray[x + 1, y].bottomLeftColumn = true;
+        tileArray[x, y - 1].topRightColumn = true;
+        tileArray[x + 1, y - 1].topLeftColumn = true;
     }
 
     void TopLeftOutsideCorner(int x, int y)
@@ -580,6 +697,13 @@ public class GenerationManager : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+
+
 
 
 

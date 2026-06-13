@@ -39,7 +39,7 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionSwitch();
-            ExecuteGeneration(currentRaycastPos, currentRaycastPos);
+            ExecuteTileGeneration(currentRaycastPos, currentRaycastPos);
         }
         else if(Input.GetMouseButtonDown(0))
         {
@@ -98,11 +98,11 @@ public class InputController : MonoBehaviour
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        ExecuteGeneration(initialRaycastPos, currentRaycastPos);
+        ExecuteTileGeneration(initialRaycastPos, currentRaycastPos);
 
     }
 
-    void MouseButtonUp()
+    void MouseButtonUp()  
     {
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
@@ -122,10 +122,10 @@ public class InputController : MonoBehaviour
         if (currentRaycastPos == previousRaycastPos)
             return;
 
-        ExecuteGeneration(currentRaycastPos, currentRaycastPos);
+        ExecuteTileGeneration(currentRaycastPos, currentRaycastPos);
     }
 
-    void ExecuteGeneration(Vector3 initialTile, Vector3 currentTargetTile)
+    void ExecuteTileGeneration(Vector3 initialTile, Vector3 currentTargetTile)
     {
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
