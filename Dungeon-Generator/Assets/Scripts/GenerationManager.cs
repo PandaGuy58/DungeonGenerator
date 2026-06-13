@@ -496,11 +496,11 @@ public class GenerationManager : MonoBehaviour
         if (tileArray[x, y].topLeftColumn)
             return;
 
-        if (tileArray[x - 1, y] == null)
+        if (tileArray[x, y].leftWall)
             return;
 
-    //    if (tileArray[x, y].tileType != tileArray[x - 1, y].tileType)
-   //         return;
+        if (tileArray[x - 1, y] == null)
+            return;
 
         if (!tileArray[x - 1, y].topWall)
             return;
@@ -517,6 +517,9 @@ public class GenerationManager : MonoBehaviour
     void TopRightColumn(int x, int y)
     {
         if (tileArray[x, y].topRightColumn)
+            return;
+
+        if (tileArray[x, y].topWall)
             return;
 
         if (tileArray[x, y + 1] == null)
@@ -538,6 +541,9 @@ public class GenerationManager : MonoBehaviour
         if (tileArray[x, y].bottomLeftColumn)
             return;
 
+        if (tileArray[x, y].bottomWall)
+            return;
+
         if (tileArray[x, y - 1] == null)
             return;
 
@@ -555,6 +561,9 @@ public class GenerationManager : MonoBehaviour
     void BottomRightColumn(int x, int y)
     {
         if (tileArray[x, y].bottomRightColumn)
+            return;
+
+        if (tileArray[x, y].rightWall)
             return;
 
         if (tileArray[x + 1, y] == null)
