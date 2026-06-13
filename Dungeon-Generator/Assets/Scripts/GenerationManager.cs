@@ -87,11 +87,14 @@ public class GenerationManager : MonoBehaviour
         GenerateWalls();
 
         GenerateWallSplits();
-        GenerateTileSplits();
-
-        GenerateOutsideCorners();
         GenerateInnerCorners();
-        GenerateColumns();
+        //
+        //
+        //GenerateTileSplits();
+
+        //      GenerateOutsideCorners();
+        //    GenerateInnerCorners();
+        //     GenerateColumns();
     }
 
 
@@ -681,8 +684,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x - 1, y].topWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x - 1, y].tileType)
-            return;
+    //    if (tileArray[x, y].tileType != tileArray[x - 1, y].tileType)
+    //        return;
 
         if (tileArray[x, y + 1] == null)
             return;
@@ -690,8 +693,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y + 1].leftWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x, y + 1].tileType)
-            return;
+    //    if (tileArray[x, y].tileType != tileArray[x, y + 1].tileType)
+   //         return;
 
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         Vector3 position = new Vector3(-0.925f, 0.5f, 0.925f);
@@ -710,8 +713,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y + 1].rightWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x, y + 1].tileType)
-            return;
+     //   if (tileArray[x, y].tileType != tileArray[x, y + 1].tileType)
+     //       return;
 
         if (tileArray[x + 1, y] == null)
             return;
@@ -719,8 +722,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x + 1, y].topWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x + 1, y].tileType)
-            return;
+     //   if (tileArray[x, y].tileType != tileArray[x + 1, y].tileType)
+     //       return;
 
 
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
@@ -740,8 +743,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x + 1, y].bottomWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x + 1, y].tileType)
-            return;
+    //    if (tileArray[x, y].tileType != tileArray[x + 1, y].tileType)
+     //       return;
 
         if (tileArray[x, y - 1] == null)
             return;
@@ -749,8 +752,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y - 1].rightWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x, y - 1].tileType)
-            return;
+   //     if (tileArray[x, y].tileType != tileArray[x, y - 1].tileType)
+    //        return;
 
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         Vector3 position = new Vector3(-0.075f, 0.5f, 0.075f);
@@ -769,8 +772,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x - 1, y].bottomWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x - 1, y].tileType)
-            return;
+   //     if (tileArray[x, y].tileType != tileArray[x - 1, y].tileType)
+   //         return;
 
         if (tileArray[x, y - 1] == null)
             return;
@@ -778,8 +781,8 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y - 1].leftWall)
             return;
 
-        if (tileArray[x, y].tileType != tileArray[x, y - 1].tileType)
-            return;
+   //     if (tileArray[x, y].tileType != tileArray[x, y - 1].tileType)
+    //        return;
 
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
         Vector3 position = new Vector3(-0.925f, 0.5f, 0.075f);
