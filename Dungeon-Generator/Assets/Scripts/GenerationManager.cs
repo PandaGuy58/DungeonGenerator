@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GenerationManager : MonoBehaviour
 {
@@ -87,14 +88,16 @@ public class GenerationManager : MonoBehaviour
         GenerateWalls();
 
         GenerateWallSplits();
-        GenerateInnerCorners();
-        //
-        //
         GenerateTileSplits();
 
-              GenerateOutsideCorners();
-            GenerateInnerCorners();
-             GenerateColumns();
+      //  GenerateInnerCorners();
+        //
+        //
+     //   
+
+         //     GenerateOutsideCorners();
+        //    GenerateInnerCorners();
+        //     GenerateColumns();
     }
 
 
@@ -418,10 +421,19 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y + 1].leftWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-0.85f, 0.5f, 1);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+        if (tileArray[x, y].leftWall)
+        {            
+            position = new Vector3(-0.85f, 0.5f, 1);
+            
+        }
+        else
+        {
+            position = new Vector3(-1f, 0.5f, 1);
+        }
 
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        PlaceObject(poolChild, position, x, y);
         tileArray[x, y].topLeftColumn = true;
         tileArray[x, y + 1].bottomLeftColumn = true;
     }
@@ -440,10 +452,18 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y + 1].rightWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-0.15f, 0.5f, 1);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+        if (tileArray[x,y].rightWall)
+        {
+            position = new Vector3(-0.15f, 0.5f, 1);
+        }
+        else
+        {
+            position = new Vector3(0, 0.5f, 1);
+        }
 
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();        
+        PlaceObject(poolChild, position, x, y);
         tileArray[x, y].topRightColumn = true;
         tileArray[x, y + 1].bottomRightColumn = true;
     }
@@ -462,10 +482,18 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y - 1].leftWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-0.85f, 0.5f, 0);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+        if (tileArray[x,y].leftWall)
+        {
+            position = new Vector3(-0.85f, 0.5f, 0);
+        }
+        else
+        {
+            position = new Vector3(-1f, 0.5f, 0);
+        }
 
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();        
+        PlaceObject(poolChild, position, x, y);
         tileArray[x, y].bottomLeftColumn = true;
         tileArray[x, y - 1].topLeftColumn = true;
     }
@@ -484,11 +512,18 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x, y - 1].rightWall)
             return;
 
+        Vector3 position;
+        if (tileArray[x, y].rightWall)
+        {
+            position = new Vector3(-0.15f, 0.5f, 0);
+        }
+        else
+        {
+            position = new Vector3(0, 0.5f, 0);
+        }
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-0.15f, 0.5f, 0);
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();        
         PlaceObject(poolChild, position, x, y);
-
         tileArray[x, y].bottomRightColumn = true;
         tileArray[x, y - 1].topRightColumn = true;
     }
@@ -507,10 +542,18 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x + 1, y].topWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(0, 0.5f, 0.85f);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+        if(tileArray[x, y].topWall)
+        {
+            position = new Vector3(0, 0.5f, 0.85f);
+        }
+        else
+        {
+            position = new Vector3(0, 0.5f, 1);
+        }
 
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();        
+        PlaceObject(poolChild, position, x, y);
         tileArray[x, y].topRightColumn = true;
         tileArray[x + 1, y].topLeftColumn = true;
     }
@@ -529,10 +572,18 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x + 1, y].bottomWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(0, 0.5f, 0.15f);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+        if (tileArray[x, y].bottomWall)
+        {
+            position = new Vector3(0, 0.5f, 0.15f);
+        }
+        else
+        {
+            position = new Vector3(0, 0.5f, 0);
+        }
 
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
+        PlaceObject(poolChild, position, x, y);
         tileArray[x, y].bottomRightColumn = true;
         tileArray[x + 1, y].bottomLeftColumn = true;
     }
@@ -551,8 +602,17 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x - 1, y].topWall)
             return;
 
-        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-1, 0.5f, 0.85f);
+        Vector3 position;
+        if(tileArray[x, y].topWall)
+        {
+            position = new Vector3(-1, 0.5f, 0.85f);
+        }
+        else
+        {
+            position = new Vector3(-1, 0.5f, 1);
+        }
+
+        PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();        
         PlaceObject(poolChild, position, x, y);
 
         tileArray[x, y].topLeftColumn = true;
@@ -573,8 +633,17 @@ public class GenerationManager : MonoBehaviour
         if (!tileArray[x - 1, y].bottomWall)
             return;
 
+        Vector3 position;
+        if (tileArray[x, y].bottomWall)
+        {
+            position = new Vector3(-1, 0.5f, 0.15f);
+        }
+        else
+        {
+            position = new Vector3(-1, 0.5f, 0);
+        }
+
         PoolChild poolChild = tileArray[x, y].majorColumnPool.RequestObject();
-        Vector3 position = new Vector3(-1, 0.5f, 0.15f);
         PlaceObject(poolChild, position, x, y);
 
         tileArray[x, y].bottomLeftColumn = true;
