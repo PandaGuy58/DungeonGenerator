@@ -1,4 +1,3 @@
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public enum TileType
@@ -7,7 +6,6 @@ public enum TileType
     Library,
     Temple,
     Tunnel,
-    Null
 }
 
 public class TileMasterClass : MonoBehaviour
@@ -20,18 +18,16 @@ public class TileMasterClass : MonoBehaviour
 
     [SerializeField] Renderer rend; // serialized in case the shader is nested in the gameobject's hierarchy
 
-    [SerializeField] public bool topWall;    // { get; private set; }
-    [SerializeField] public bool bottomWall; // { get; private set; }
-    [SerializeField] public bool leftWall;   // { get; private set; }
-    [SerializeField] public bool rightWall;           // { get; private set; }
+    [HideInInspector] public bool topWall { get; private set; }
+    [HideInInspector] public bool bottomWall { get; private set; }
+    [HideInInspector] public bool leftWall { get; private set; }
+    [HideInInspector] public bool rightWall { get; private set; }
 
-    [SerializeField] public bool topLeftColumn;
-    [SerializeField] public bool topRightColumn;
-    [SerializeField] public bool bottomLeftColumn;
-    [SerializeField] public bool bottomRightColumn;
+    [HideInInspector] public bool topLeftColumn { get; private set; }
+    [HideInInspector] public bool topRightColumn { get; private set; }
+    [HideInInspector] public bool bottomLeftColumn { get; private set; }
+    [HideInInspector] public bool bottomRightColumn { get; private set; }
 
-    [SerializeField] public int x;
-    [SerializeField] public int y;
 
     public void SetWallPool(ObjectPoolMasterclass wallPool)
     {
@@ -59,7 +55,14 @@ public class TileMasterClass : MonoBehaviour
     }
     public void ControlShader(bool shaderActive)
     {
-        rend.enabled = shaderActive;
+        if(shaderActive)
+        {
+            rend.material.SetFloat("_Active", 1);
+        }
+        else
+        {
+            rend.material.SetFloat("_Active", 0);
+        }
     }
 
     public void ResetWallsColumns()
@@ -95,10 +98,24 @@ public class TileMasterClass : MonoBehaviour
         rightWall = true;
     }
 
-    public void SetXY(int  x, int y)
+    public void SetTopRightColumn()
     {
-        this.x = x;
-        this.y = y;
+        topRightColumn = true;
+    }
+
+    public void SetTopLeftColumn()
+    {
+        topLeftColumn = true;
+    }
+
+    public void SetBottomLeftColumn()
+    {
+        bottomLeftColumn = true;
+    }
+
+    public void SetBottomRightColumn()
+    {
+        bottomRightColumn = true;
     }
 }
        

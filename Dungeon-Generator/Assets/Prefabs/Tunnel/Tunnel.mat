@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DungeonTile
+  m_Name: Tunnel
   m_Shader: {fileID: -6465566751694194690, guid: aaaae4765ad15864bbb818178e57e9af, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -51,15 +51,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _Active: 0
-    - _OffsetX: 0
-    - _OffsetY: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.7583056, b: 0.5566038, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &7341218929952045213
+--- !u!114 &6999843644218707501
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

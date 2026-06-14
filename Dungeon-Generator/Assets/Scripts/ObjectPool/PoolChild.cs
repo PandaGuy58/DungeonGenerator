@@ -5,8 +5,6 @@ public class PoolChild : MonoBehaviour
     ObjectPoolMasterclass pool;
     [SerializeField] bool destructive;
 
-    [SerializeField] public string columnName;
-
     public void Initialise(ObjectPoolMasterclass pool)
     {
         this.pool = pool;

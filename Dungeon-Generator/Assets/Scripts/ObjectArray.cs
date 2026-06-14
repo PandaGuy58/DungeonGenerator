@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GenerationData
@@ -31,7 +29,6 @@ public class ObjectArray : MonoBehaviour
     GenerationData[,] temporaryArray;
 
     // before contents are (re)generated all contents are reset
-    //List<PoolChild> contentsList = new List<PoolChild>();
 
     private void Awake()
     {
