@@ -90,11 +90,11 @@ public class GenerationManager : MonoBehaviour
         GenerateInnerCorners();
         //
         //
-        //GenerateTileSplits();
+        GenerateTileSplits();
 
-        //      GenerateOutsideCorners();
-        //    GenerateInnerCorners();
-        //     GenerateColumns();
+              GenerateOutsideCorners();
+            GenerateInnerCorners();
+             GenerateColumns();
     }
 
 
@@ -678,6 +678,12 @@ public class GenerationManager : MonoBehaviour
         if (tileArray[x, y].topLeftColumn)
             return;
 
+        if (tileArray[x, y].leftWall)
+            return;
+
+        if (tileArray[x, y].topWall)
+            return;
+
         if (tileArray[x - 1, y] == null)
             return;
 
@@ -705,6 +711,12 @@ public class GenerationManager : MonoBehaviour
     void TopRightInnerCorner(int x, int y)
     {
         if (tileArray[x, y].topRightColumn)
+            return;
+
+        if (tileArray[x, y].topWall)
+            return;
+
+        if (tileArray[x, y].rightWall)
             return;
 
         if (tileArray[x, y + 1] == null)
@@ -737,6 +749,12 @@ public class GenerationManager : MonoBehaviour
         if (tileArray[x, y].bottomRightColumn)
             return;
 
+        if (tileArray[x, y].bottomWall)
+            return;
+
+        if (tileArray[x, y].rightWall)
+            return;
+
         if (tileArray[x + 1, y] == null)
             return;
 
@@ -764,6 +782,12 @@ public class GenerationManager : MonoBehaviour
     void BottomLeftInnerCorner(int x, int y)
     {
         if (tileArray[x, y].bottomLeftColumn)
+            return;
+
+        if (tileArray[x, y].bottomWall)
+            return;
+
+        if (tileArray[x, y].leftWall)
             return;
 
         if (tileArray[x - 1, y] == null)
@@ -898,6 +922,8 @@ public class GenerationManager : MonoBehaviour
         }
     }
 }
+
+
 
 
 
