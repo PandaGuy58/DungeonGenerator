@@ -6,6 +6,11 @@
 # See: https://github.com/github/gitignore/tree/main/Global
 #
 
+Assets/
+*.meta
+*.asset
+
+
 .utmp/
 [Ll]ibrary/
 [Tt]emp/
