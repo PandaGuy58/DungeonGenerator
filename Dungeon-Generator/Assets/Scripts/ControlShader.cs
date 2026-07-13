@@ -2,19 +2,22 @@ using UnityEngine;
 
 public class ControlShader : MonoBehaviour
 {
-    TileMasterClass tileMasterClass;
-
-    [SerializeField] float x;
-
-    [SerializeField] float y;
+    Renderer rend;
 
     private void Awake()
     {
-        tileMasterClass = GetComponent<TileMasterClass>();
+        rend = GetComponent<Renderer>();
     }
 
-    private void Update()
+    public void Activate(bool active)
     {
-      //  tileMasterClass.SetOffset(x, y);
+        if (active)
+        {
+            rend.material.SetFloat("_Active", 1);
+        }
+        else
+        {
+            rend.material.SetFloat("_Active", 0);
+        }
     }
 }

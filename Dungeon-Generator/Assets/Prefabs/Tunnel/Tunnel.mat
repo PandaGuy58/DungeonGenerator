@@ -51,6 +51,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Active: 0
+    - _Alpha: 1e+20
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:

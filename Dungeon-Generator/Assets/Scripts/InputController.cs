@@ -14,14 +14,14 @@ public class InputController : MonoBehaviour
     Vector3 currentRaycastPos;
     Vector3 previousRaycastPos;
 
-    // for player to switch between different tyles
-    int currentSelectedTilePool = 0;
-    [SerializeField] List<ObjectPoolMasterclass> tilePools;
+    // for player to switch between different biomes
+    int selectedBiome = 0;
+    [SerializeField] List<Biome> biomes;
 
     private void Awake()
     {
-        string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
-        UIManager.instance.UpdateText(currentPrefabName);
+        UIManager.instance.UpdateText(biomes[selectedBiome].name);
+
     }
 
     void Update()
@@ -33,7 +33,7 @@ public class InputController : MonoBehaviour
             ActionSwitch();
             ExecuteTileGeneration(currentRaycastPos, currentRaycastPos);
         }
-        else if(Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(0))
         {
             MouseButtonDown();
         }
@@ -41,7 +41,7 @@ public class InputController : MonoBehaviour
         {
             MouseButton();
         }
-        else if(Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0))
         {
             MouseButtonUp();
         }
@@ -69,20 +69,19 @@ public class InputController : MonoBehaviour
 
     void ActionSwitch()
     {
-        currentSelectedTilePool++;
-        if (currentSelectedTilePool > tilePools.Count - 1)
+        selectedBiome++;
+        if (selectedBiome > biomes.Count - 1)
         {
-            currentSelectedTilePool = 0;
+            selectedBiome = 0;
         }
 
-        string currentPrefabName = tilePools[currentSelectedTilePool].GetPrefabName();
-        UIManager.instance.UpdateText(currentPrefabName);
+        UIManager.instance.UpdateText(biomes[selectedBiome].name);
     }
 
     void MouseButtonDown()
     {
         initialRaycastPos = currentRaycastPos;
-        GenerationManager.instance.DisableContents();
+        GenerationManager.instance.DestroyContents();
     }
 
     void MouseButton()
@@ -91,11 +90,21 @@ public class InputController : MonoBehaviour
             return;
 
         ExecuteTileGeneration(initialRaycastPos, currentRaycastPos);
-
     }
 
-    void MouseButtonUp()  
+    void MouseButtonUp()
     {
+        if (biomes[selectedBiome].IsDestructive())
+        {
+            ObjectArray.instance.RemoveFromArray();
+            GenerationManager.instance.RegenerateTiles();
+        }
+
+        ObjectArray.instance.FinaliseArray();
+        GenerationManager.instance.GenerateContents();
+
+        /*
+         * old code
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
             ObjectArray.instance.RemoveFromArray();
@@ -104,6 +113,7 @@ public class InputController : MonoBehaviour
 
         ObjectArray.instance.FinalisePoolArray();
         GenerationManager.instance.GenerateContents();
+        */
     }
 
     void MouseInactive()
@@ -119,6 +129,27 @@ public class InputController : MonoBehaviour
 
     void ExecuteTileGeneration(Vector3 initialTile, Vector3 currentTargetTile)
     {
+        /*
+        if (biomes[selectedBiome].IsDestructive)
+        {
+            
+        }
+        else
+        {
+            ObjectArray.instance.GenerateTemporaryArray(initialTile, currentTargetTile, biomes[selectedBiome]);
+        }
+        */
+
+        ObjectArray.instance.GenerateTemporaryArray(initialTile, currentTargetTile, biomes[selectedBiome]);
+        GenerationManager.instance.RegenerateTiles();
+        previousRaycastPos = currentRaycastPos;
+
+
+
+
+
+        /*
+         * old code
         if (currentSelectedTilePool == tilePools.Count - 1)
         {
             ObjectArray.instance.GenerateTemporaryArrayDestruction(initialTile, currentTargetTile, tilePools[currentSelectedTilePool]);
@@ -130,5 +161,6 @@ public class InputController : MonoBehaviour
 
         GenerationManager.instance.RegenerateTiles();
         previousRaycastPos = currentRaycastPos;
+        */
     }
 }

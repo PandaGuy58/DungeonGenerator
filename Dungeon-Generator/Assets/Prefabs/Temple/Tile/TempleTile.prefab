@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 4774581118350666}
   - component: {fileID: 33589787147049660}
   - component: {fileID: 23819972543604334}
-  - component: {fileID: -7653556948284604365}
-  - component: {fileID: 6250978180651837552}
+  - component: {fileID: 2881841569836961420}
   m_Layer: 0
   m_Name: TempleTile
   m_TagString: Temple
@@ -92,7 +91,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-7653556948284604365
+--- !u!114 &2881841569836961420
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,20 +100,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1451186026775586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
+  m_Script: {fileID: 11500000, guid: 4223eb260000e674989afa56cb511eab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
-  destructive: 0
---- !u!114 &6250978180651837552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451186026775586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0fd22d16bf660c41868ece054888c59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TempleTile
-  rend: {fileID: 23819972543604334}
+  m_EditorClassIdentifier: Assembly-CSharp::ControlShader

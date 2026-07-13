@@ -51,6 +51,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Active: 0
+    - _Alpha: 10
     - _OffsetX: 0
     - _OffsetY: 0
     - _QueueControl: 0

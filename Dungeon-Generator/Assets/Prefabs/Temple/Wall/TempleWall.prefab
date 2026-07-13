@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6251600872772303328}
-  - component: {fileID: -5735068998435565552}
+  - component: {fileID: 3200711898377953695}
   m_Layer: 0
   m_Name: TempleWall
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 9094748800679727827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5735068998435565552
+--- !u!114 &3200711898377953695
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,10 +42,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2946003020603589757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
+  m_Script: {fileID: 11500000, guid: cbf6db73729638e4e9dc1855f6e1b746, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
-  destructive: 0
+  m_EditorClassIdentifier: Assembly-CSharp::ControlContent
+  render: {fileID: 9109557711526288021}
 --- !u!1001 &9095216807020841733
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -115,5 +115,10 @@ PrefabInstance:
 --- !u!4 &9094748800679727827 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4427348796447190, guid: f963737d9c0ae0548ab514a15dd5749a, type: 3}
+  m_PrefabInstance: {fileID: 9095216807020841733}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9109557711526288021 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 23385539551039888, guid: f963737d9c0ae0548ab514a15dd5749a, type: 3}
   m_PrefabInstance: {fileID: 9095216807020841733}
   m_PrefabAsset: {fileID: 0}

@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 4677571737611520}
   - component: {fileID: 33858189162711108}
   - component: {fileID: 23320082231920964}
-  - component: {fileID: -6313831569073817704}
-  - component: {fileID: 4495630646255123282}
+  - component: {fileID: 8852218152865203655}
   m_Layer: 0
   m_Name: TunnelTile
   m_TagString: Untagged
@@ -92,7 +91,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-6313831569073817704
+--- !u!114 &8852218152865203655
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,20 +100,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1722460540044194}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d45848ca18c1743b3edc38b7e2050c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4223eb260000e674989afa56cb511eab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TunnelTile
-  rend: {fileID: 23320082231920964}
---- !u!114 &4495630646255123282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1722460540044194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
-  destructive: 0
+  m_EditorClassIdentifier: Assembly-CSharp::ControlShader
+  x: 0
+  y: 0

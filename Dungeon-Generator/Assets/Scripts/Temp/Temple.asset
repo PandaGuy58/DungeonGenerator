@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2031e6602347cd14b9244e289bab4a73, type: 3}
+  m_Name: Temple
+  m_EditorClassIdentifier: Assembly-CSharp::Biome
+  isDestructive: 0
+  stopWallGeneration: 0
+  floorPrefab: {fileID: 1451186026775586, guid: d2271178a217e0c4ebddbc8759925033, type: 3}
+  wallPrefab: {fileID: 2946003020603589757, guid: dbff057d7c364884a9b8cb67d7e1d615, type: 3}

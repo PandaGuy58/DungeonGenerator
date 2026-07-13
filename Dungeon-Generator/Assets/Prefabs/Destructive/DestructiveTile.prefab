@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8045430812364243992}
-  - component: {fileID: 1718060750022056873}
   m_Layer: 0
   m_Name: DestructiveTile
   m_TagString: Destructive
@@ -33,19 +32,6 @@ Transform:
   - {fileID: 4595416173559840819}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1718060750022056873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5240157006985349795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
-  destructive: 1
 --- !u!1001 &3180395646780833527
 PrefabInstance:
   m_ObjectHideFlags: 0

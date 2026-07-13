@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class GenerationData
 {
-    public ObjectPoolMasterclass pool {  get; private set; }
+    public Biome biome {  get; private set; }
     public bool destruction { get; private set; }
 
-    public void Initialise(ObjectPoolMasterclass pool, bool destruction)
+    public void Initialise(Biome biome, bool destruction)
     {
         this.destruction = destruction;
-        this.pool = pool;
+        this.biome = biome;
     }
 
     public void EnableDestruction(bool destruction)
@@ -24,11 +24,8 @@ public class ObjectArray : MonoBehaviour
 
     // array is larger than needed by 2 at x and y
     // x.0, y.0, x.Length, y.Length are empty for logic purposes
-    // for this reason x += 1 and y += 1 are added in AssignObjectToArray & ReleaseObjectFromArray
     GenerationData[,] array;
     GenerationData[,] temporaryArray;
-
-    // before contents are (re)generated all contents are reset
 
     private void Awake()
     {
@@ -42,7 +39,7 @@ public class ObjectArray : MonoBehaviour
         return temporaryArray;
     }
 
-    public void FinalisePoolArray()
+    public void FinaliseArray()
     {
         array = temporaryArray;
     }
@@ -58,7 +55,7 @@ public class ObjectArray : MonoBehaviour
                     continue;
 
                 GenerationData data = new GenerationData();
-                data.Initialise(oldArray[x, z].pool, oldArray[x, z].destruction);
+                data.Initialise(oldArray[x, z].biome, oldArray[x, z].destruction);
                 newArray[x, z] = data;
             }
         }
@@ -66,51 +63,93 @@ public class ObjectArray : MonoBehaviour
         return newArray;
     }
 
-    public void GenerateTemporaryArray(Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
+    void AssignArrayElement(int x, int z, Biome biome)
+    {
+        GenerationData data = new GenerationData();
+        if (biome.IsDestructive())
+        {
+            if (temporaryArray[x, z] == null)
+            {
+                data.Initialise(biome, true);
+                temporaryArray[x, z] = data;
+            }
+            else
+            {
+                temporaryArray[x, z].EnableDestruction(true);
+            }
+        }
+        else
+        {
+            data.Initialise(biome, false);
+            temporaryArray[x, z] = data;
+        }
+    }
+
+    public void GenerateTemporaryArray(Vector3 initialTile, Vector3 currentTargetTile, Biome biome)
     {
         temporaryArray = CreateNewArray(array);
 
 
         if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
+            /*
             GenerationData data = new GenerationData();
-            data.Initialise(tilesPool, false);
+            data.Initialise(biome, false);
             temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
+            */
+            AssignArrayElement((int)initialTile.x, (int)initialTile.z, biome);
         }
         else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
             {
+                /*
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, false);
+                data.Initialise(biome, false);
                 temporaryArray[x, (int)currentTargetTile.z] = data;
+                */
+
+                AssignArrayElement(x, (int)currentTargetTile.z, biome);
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
         {
             for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
             {
+                /*
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, false);
+                data.Initialise(biome, false);
                 temporaryArray[x, (int)currentTargetTile.z] = data;
+                */
+
+                AssignArrayElement(x, (int)currentTargetTile.z, biome);
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
             {
+                /*
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, false);
+                data.Initialise(biome, false);
                 temporaryArray[(int)initialTile.x, z] = data;
+                */
+
+                AssignArrayElement((int)initialTile.x, z, biome);
+
             }
         }
         else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
         {
             for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
             {
+                /*
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, false);
+                data.Initialise(biome, false);
                 temporaryArray[(int)initialTile.x, z] = data;
+                */
+
+                AssignArrayElement((int)initialTile.x, z, biome);
             }
         }
         else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
@@ -119,9 +158,13 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
+                    /*
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(biome, false);
                     temporaryArray[x, z] = data;
+                    */
+
+                    AssignArrayElement(x, z, biome);
                 }
             }
         }
@@ -131,9 +174,13 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
                 {
+                    /*
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(biome, false);
                     temporaryArray[x, z] = data;
+                    */
+
+                    AssignArrayElement(x, z, biome);
                 }
             }
         }
@@ -143,9 +190,13 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
+                    /*
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(biome, false);
                     temporaryArray[x, z] = data;
+                    */
+
+                    AssignArrayElement(x, z, biome);
                 }
             }
         }
@@ -155,15 +206,38 @@ public class ObjectArray : MonoBehaviour
             {
                 for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
                 {
+                    /*
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, false);
+                    data.Initialise(biome, false);
                     temporaryArray[x, z] = data;
+                    */
+                    AssignArrayElement(x, z, biome);
                 }
             }
         }
     }
 
-    public void GenerateTemporaryArrayDestruction(Vector3 initialTile, Vector3 currentTargetTile, ObjectPoolMasterclass tilesPool)
+    public void RemoveFromArray()
+    {
+        for (int x = 0; x < temporaryArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < temporaryArray.GetLength(1); y++)
+            {
+                if (temporaryArray[x, y] == null)
+                    continue;
+
+                if (!temporaryArray[x, y].destruction)
+                    continue;
+
+                temporaryArray[x, y] = null;
+            }
+        }
+    }
+}
+
+
+    /*
+    public void GenerateTemporaryArrayDestruction(Vector3 initialTile, Vector3 currentTargetTile, Biome biome)
     {
         temporaryArray = CreateNewArray(array);
 
@@ -172,7 +246,7 @@ public class ObjectArray : MonoBehaviour
             if(temporaryArray[(int)initialTile.x, (int)initialTile.z] == null)
             {
                 GenerationData data = new GenerationData();
-                data.Initialise(tilesPool, true);
+                data.Initialise(biome, true);
                 temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
             }
             else
@@ -187,7 +261,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[x, (int)currentTargetTile.z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, true);
+                    data.Initialise(biome, true);
                     temporaryArray[x, (int)currentTargetTile.z] = data;
                 }
                 else
@@ -203,7 +277,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[x, (int)currentTargetTile.z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, true);
+                    data.Initialise(biome, true);
                     temporaryArray[x, (int)currentTargetTile.z] = data;
                 }
                 else
@@ -219,7 +293,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[(int)initialTile.x, z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, true);
+                    data.Initialise(biome, true);
                     temporaryArray[(int)initialTile.x, z] = data;
                 }
                 else
@@ -235,7 +309,7 @@ public class ObjectArray : MonoBehaviour
                 if(temporaryArray[(int)initialTile.x, z] == null)
                 {
                     GenerationData data = new GenerationData();
-                    data.Initialise(tilesPool, true);
+                    data.Initialise(biome, true);
                     temporaryArray[(int)initialTile.x, z] = data;
                 }
                 else
@@ -254,7 +328,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, true);
+                        data.Initialise(biome, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -273,7 +347,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, true);
+                        data.Initialise(biome, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -292,7 +366,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, true);
+                        data.Initialise(biome, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -311,7 +385,7 @@ public class ObjectArray : MonoBehaviour
                     if(temporaryArray[x, z] == null)
                     {
                         GenerationData data = new GenerationData();
-                        data.Initialise(tilesPool, true);
+                        data.Initialise(biome, true);
                         temporaryArray[x, z] = data;
                     }
                     else
@@ -323,20 +397,6 @@ public class ObjectArray : MonoBehaviour
         }
     }
 
-    public void RemoveFromArray()
-    {
-        for(int x = 0; x < temporaryArray.GetLength(0); x++)
-        {
-            for(int y = 0;  y < temporaryArray.GetLength(1); y++)
-            {
-                if (temporaryArray[x, y] == null)
-                    continue;
 
-                if (!temporaryArray[x, y].destruction)
-                    continue;
 
-                temporaryArray[x, y] = null;
-            }
-        }
-    }
-}
+        */

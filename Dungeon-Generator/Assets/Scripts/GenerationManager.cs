@@ -4,47 +4,92 @@ using UnityEngine;
 public class GenerationManager : MonoBehaviour
 {
     public static GenerationManager instance;
-    List<PoolChild> generatedTiles = new List<PoolChild>();
-    List<PoolChild> contents = new List<PoolChild>();
-
-    TileMasterClass[,] tileArray;
+    List<GameObject> generatedTiles = new List<GameObject>();
+    List<GameObject> contents = new List<GameObject>();
 
     private void Awake()
     {
         instance = this;
     }
 
-    void ReturnToPool(List<PoolChild> poolChildList)
+    void DestroyObjects(List<GameObject> objects)
     {
-        for (int i = 0; i < poolChildList.Count; i++)
+        for (int i = 0; i < objects.Count; i++)
         {
-            poolChildList[i].ReturnChildToPool();
+            Destroy(objects[i]);
         }
-        poolChildList.Clear();
+        objects.Clear();
     }
 
-    void PlaceObject(PoolChild poolChild, Vector3 position, int x, int y)
+    public void DestroyContents()
     {
-        Vector3 calculate = tileArray[x, y].transform.position;
-        calculate += position;
-        poolChild.gameObject.transform.position = calculate;
-        contents.Add(poolChild);
+        for(int i  = 0; i < contents.Count; i++)
+        {
+            Destroy(contents[i]);
+        }
     }
 
-    void PlaceObjectRotate(PoolChild poolChild, Vector3 position, Vector3 rotation, int x, int y)
+    void PlaceObjectRotate(GameObject prefab, Vector3 position, Vector3 rotation, int x, int y)
     {
-        Vector3 calculate = tileArray[x, y].transform.position;
+        Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
         calculate += position;
-        poolChild.gameObject.transform.position = calculate;
-        poolChild.gameObject.transform.eulerAngles = rotation;
-        contents.Add(poolChild);
+        GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
+        newObject.transform.eulerAngles = rotation;
+        contents.Add(newObject);
     }
+
+    void PlaceObject(GameObject prefab, Vector3 position, int x, int y)
+    {
+        Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
+        calculate += position;
+        GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
+        contents.Add(newObject);
+    }
+
+
 
     public void RegenerateTiles()
     {
         GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
-        ReturnToPool(generatedTiles);
-        tileArray = new TileMasterClass[51, 51];
+        DestroyObjects(generatedTiles);
+        for (int x = 0; x < array.GetLength(0); x++)
+        {
+            for (int z = 0; z < array.GetLength(1); z++)
+            {
+                Tile(x, z, array);
+            }
+        }
+    }
+
+    void Tile(int x, int z, GenerationData[,] array)
+    {
+        if (array[x, z] == null)
+            return;
+
+        Vector3 coordinate = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
+        GameObject newTile = Instantiate(array[x, z].biome.FloorPrefab(), coordinate, Quaternion.identity);
+        generatedTiles.Add(newTile);
+
+        if (array[x, z].biome.IsDestructive())
+            return;
+
+        ControlShader controlShader = newTile.GetComponent<ControlShader>();
+
+        if (array[x, z].destruction)
+        {
+            controlShader.Activate(true);
+        }
+        else
+        {
+            controlShader.Activate(false);
+        }
+    }
+
+    public void GenerateContents()
+    {
+        Debug.Log(Time.time);
+        GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
+
         for (int x = 0; x < array.GetLength(0); x++)
         {
             for (int z = 0; z < array.GetLength(1); z++)
@@ -52,51 +97,26 @@ public class GenerationManager : MonoBehaviour
                 if (array[x, z] == null)
                     continue;
 
-                PoolChild newTile = array[x, z].pool.RequestObject();
-                newTile.transform.position = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
-                generatedTiles.Add(newTile);
-
-                if (newTile.IsDestructive())
-                    continue;
-
-                TileMasterClass tile = newTile.GetComponent<TileMasterClass>();
-                tile.ResetWallsColumns();
-
-                tileArray[x, z] = tile;
-
-                if (array[x, z].destruction)
-                {
-                    tile.ControlShader(true);
-                }
-                else
-                {
-                    tile.ControlShader(false);
-                }
-            }
-        }
-    }
-
-    public void DisableContents()
-    {
-        ReturnToPool(contents);
-    }
-
-    public void GenerateContents()
-    {
-        GenerateWalls();
-
+                GenerateTopWall(x, z, array);
+                GenerateBottomWall(x, z, array);
+                GenerateRightWall(x, z, array);
+                GenerateLeftWall(x, z, array);
+                /*
         GenerateWallSplits();
         GenerateTunnelColumns();
         GenerateTileSplits();
         GenerateInnerCorners();
         GenerateOutsideCorners();
         GenerateColumns();
+        */
+            }
+        }
     }
 
 
-    
 
-    void GenerateWalls()
+    /*
+    void GenerateWalls(int x, int )
     {
         for (int x = 0; x < tileArray.GetLength(0); x++)
         {
@@ -112,123 +132,141 @@ public class GenerationManager : MonoBehaviour
             }
         }
     }
+    */
 
-    void GenerateTopWall(int x, int y)
+    void GenerateTopWall(int x, int y, GenerationData[,] array)
     {
-        if (tileArray[x, y + 1] == null)
+        if (array[x, y + 1] == null)
         {
-            TopWall(x, y);
+            TopWall(x, y, array);
             return;
         }
 
-        if (tileArray[x, y].tileType == tileArray[x, y + 1].tileType)
+        if (array[x, y].biome == array[x, y + 1].biome)
             return;
 
-        if (tileArray[x, y].tileType == TileType.Tunnel)
+
+        if (array[x, y].biome.StopWallGeneration())
             return;
 
-        if (tileArray[x, y + 1].tileType == TileType.Tunnel)
+
+        if (array[x, y + 1].biome.StopWallGeneration())
             return;
 
-        TopWall(x, y);
+        TopWall(x, y, array);
     }
 
-    void TopWall(int x, int y)
+    void TopWall(int x, int y, GenerationData[,] array)
     {
-        PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
-        Vector3 calculate = Vector3.zero;
-        PlaceObjectRotate(poolChild, calculate, calculate, x, y);
-        tileArray[x, y].SetTopWall();
+        GameObject targetPrefab = array[x, y].biome.WallPrefab();
+        //GameObject newObject = Instantiate(targetPrefab, Vector3.zero, Quaternion.identity);
+        PlaceObject(targetPrefab, Vector3.zero, x, y);
     }
 
-    void GenerateBottomWall(int x, int y)
+    void GenerateBottomWall(int x, int y, GenerationData[,] array)
     {
-        if (tileArray[x, y - 1] == null)
+        if (array[x, y - 1] == null)
         {
-            BottomWall(x, y);
+            BottomWall(x, y, array);
             return;
         }
 
-        if (tileArray[x, y].tileType == tileArray[x, y - 1].tileType)
+        if (array[x, y].biome == array[x, y - 1].biome)
             return;
 
-        if (tileArray[x, y].tileType == TileType.Tunnel)
+        if (array[x, y].biome.StopWallGeneration())
             return;
 
-        if (tileArray[x, y - 1].tileType == TileType.Tunnel)
+        if (array[x, y - 1].biome.StopWallGeneration())
             return;
 
-        BottomWall(x, y);
+        BottomWall(x, y, array);
     }
 
-    void BottomWall(int x, int y)
+    void BottomWall(int x, int y, GenerationData[,] array)
     {
-        PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
+        GameObject targetPrefab = array[x, y].biome.WallPrefab();
+       // GameObject newObject = Instantiate(targetPrefab, Vector3.zero, Quaternion.identity);
         Vector3 position = new Vector3(-1, 0, +1);
         Vector3 rotation = new Vector3(0, 180, 0);
-        PlaceObjectRotate(poolChild, position, rotation, x, y);
-        tileArray[x, y].SetBottomWall();
+        PlaceObjectRotate(targetPrefab, position, rotation, x, y);
+
     }
 
-    void GenerateRightWall(int x, int y)
+    void GenerateRightWall(int x, int y, GenerationData[,] array)
     {
-        if (tileArray[x + 1, y] == null)
+        if (array[x + 1, y] == null)
         {
-            RightWall(x, y);
+            RightWall(x, y, array);
             return;
         }
 
-        if (tileArray[x, y].tileType == tileArray[x + 1, y].tileType)
+        if (array[x, y].biome == array[x + 1, y].biome)
             return;
 
-        if (tileArray[x, y].tileType == TileType.Tunnel)
+        if (array[x, y].biome.StopWallGeneration())
             return;
 
-        if (tileArray[x + 1, y].tileType == TileType.Tunnel)
+        if (array[x + 1, y].biome.StopWallGeneration())
             return;
 
-        RightWall(x, y);
+        RightWall(x, y, array);
     }
 
-    void RightWall(int x, int y)
+    void RightWall(int x, int y, GenerationData[,] array)
     {
-        PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
+        GameObject targetPrefab = array[x, y].biome.WallPrefab();
+       // GameObject newObject = Instantiate(targetPrefab, Vector3.zero, Quaternion.identity);
         Vector3 position = new Vector3(-1, 0, 0);
         Vector3 rotation = new Vector3(0, 90, 0);
-        PlaceObjectRotate(poolChild, position, rotation, x, y);
-        tileArray[x, y].SetRightWall();
+        PlaceObjectRotate(targetPrefab, position, rotation, x, y);
     }
 
-    void GenerateLeftWall(int x, int y)
+    void GenerateLeftWall(int x, int y, GenerationData[,] array)
     {
-        if (tileArray[x - 1, y] == null)
+        if (array[x - 1, y] == null)
         {
-            LeftWall(x, y);
+            LeftWall(x, y, array);
             return;
         }
 
-        if (tileArray[x, y].tileType == tileArray[x - 1, y].tileType)
+        if (array[x, y].biome == array[x - 1, y].biome)
             return;
 
-        if (tileArray[x, y].tileType == TileType.Tunnel)
+        if (array[x, y].biome.StopWallGeneration())
             return;
 
-        if (tileArray[x - 1, y].tileType == TileType.Tunnel)
+        if (array[x - 1, y].biome.StopWallGeneration())
             return;
 
-        LeftWall(x, y);
+        LeftWall(x, y, array);
     }
 
-    void LeftWall(int x, int y)
+    void LeftWall(int x, int y, GenerationData[,] array)
     {
-        PoolChild poolChild = tileArray[x, y].wallPool.RequestObject();
+        GameObject targetPrefab = array[x, y].biome.WallPrefab();
+      //  GameObject newObject = Instantiate(targetPrefab, Vector3.zero, Quaternion.identity);
         Vector3 position = new Vector3(0, 0, 1);
         Vector3 rotation = new Vector3(0, -90, 0);
-        PlaceObjectRotate(poolChild, position, rotation, x, y);
-        tileArray[x, y].SetLeftWall();
+        PlaceObjectRotate(targetPrefab, position, rotation, x, y);
     }
+}
 
-    void GenerateWallSplits()
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+void GenerateWallSplits()
     {
         for (int x = 0; x < tileArray.GetLength(0); x++)
         {
@@ -1260,3 +1298,5 @@ public class GenerationManager : MonoBehaviour
         }
     }
 }
+
+    */

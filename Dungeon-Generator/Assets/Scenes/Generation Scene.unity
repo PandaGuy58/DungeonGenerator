@@ -1873,12 +1873,11 @@ MonoBehaviour:
   raycastMask:
     serializedVersion: 2
     m_Bits: 64
-  tilePools:
-  - {fileID: 1101388445}
-  - {fileID: 1518106176}
-  - {fileID: 1245616172}
-  - {fileID: 795661669}
-  - {fileID: 369195521}
+  biomes:
+  - {fileID: 11400000, guid: c2361bf7caf13bf459c38f0c72497f00, type: 2}
+  - {fileID: 11400000, guid: c2813b253258f404baa8c741ff2a38f7, type: 2}
+  - {fileID: 11400000, guid: b6c4f0663199cd5428bb9f9e91eb2ee0, type: 2}
+  - {fileID: 11400000, guid: 695fde7a12e1e5c4a9c2cbcb3cd6e274, type: 2}
 --- !u!4 &1566500110
 Transform:
   m_ObjectHideFlags: 0
