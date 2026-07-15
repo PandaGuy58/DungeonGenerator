@@ -103,31 +103,6 @@ public class GenerationManager : MonoBehaviour
         }
     }
 
-
-
-    //   GenerateTopWall(x, z, array);
-    //  GenerateBottomWall(x, z, array);
-    //  GenerateRightWall(x, z, array);
-    //   GenerateLeftWall(x, z, array);
-
-    //       GenerateTopLeftInnerCorner(x, z);
-    //     GenerateTopRightInnerCorner(x, z);
-    //      GenerateBottomLeftInnerCorner(x, z);
-    //      GenerateBottomRightInnerCorner(x, z);
-
-
-    /*
-GenerateWallSplits();
-GenerateTunnelColumns();
-GenerateTileSplits();
-GenerateInnerCorners();
-GenerateOutsideCorners();
-GenerateColumns();
-*/
-
-
-
-
     bool CheckWall(int x, int y, GenerationData[,] array, Biome biome)
     {
         if (array[x, y] == null)
@@ -243,55 +218,192 @@ GenerateColumns();
 
     void TopLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
+        bool tileTransitionOne = false;
+
         if (!CheckTopWall(x, y, array))
-            return;
+        {
+            tileTransitionOne = true;
+        }
+
+        bool tileTransitionTwo = false;
 
         if (!CheckLeftWall(x, y, array))
+        {
+            tileTransitionTwo = true;
+        }
+
+        Vector3 position;
+
+        if (tileTransitionOne && tileTransitionTwo)
+        {
+            if (array[x - 1, y + 1] == null)
+                return;
+
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome == array[x - 1, y].biome)
+                return;
+
+            if (array[x, y].biome == array[x, y + 1].biome)
+                return;
+
+            position = new Vector3(-1, 0.5f, 1);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            position = new Vector3(-0.85f, 0.5f, 0.85f);
+        }
+        else
+        {
             return;
+        }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        Vector3 position = new Vector3(-0.85f, 0.5f, 0.85f);
         PlaceObject(prefab, position, x, y);
     }
 
     void TopRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
+        bool tileTransitionOne = false;
+
         if (!CheckTopWall(x, y, array))
-            return;
+        {
+            tileTransitionOne = true;
+        }
+
+        bool tileTransitionTwo = false;
 
         if (!CheckRightWall(x, y, array))
+        {
+            tileTransitionTwo = true;
+        }
+
+        Vector3 position;
+
+        if(tileTransitionOne && tileTransitionTwo)
+        {
+            if (array[x + 1, y + 1] == null)
+                return;
+
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome == array[x + 1, y].biome)
+                return;
+
+            if (array[x, y].biome == array[x, y + 1].biome)
+                return;
+
+            position = new Vector3(0, 0.5f, 1);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            position = new Vector3(-0.15f, 0.5f, 0.85f);
+        }
+        else
+        {
             return;
+        }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        Vector3 position = new Vector3(-0.15f, 0.5f, 0.85f);
         PlaceObject(prefab, position, x, y);
 
     }
 
     void BottomLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
+        bool tileTransitionOne = false;
+
         if (!CheckBottomWall(x, y, array))
-            return;
+        {
+            tileTransitionOne = true;
+        }
+
+        bool tileTransitionTwo = false;
 
         if (!CheckLeftWall(x, y, array))
+        {
+            tileTransitionTwo = true;
+        }
+
+        Vector3 position;
+
+        if (tileTransitionOne && tileTransitionTwo)
+        {
+            if (array[x - 1, y - 1] == null)
+                return;
+
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome == array[x - 1, y].biome)
+                return;
+
+            if (array[x, y].biome == array[x, y - 1].biome)
+                return;
+
+            position = new Vector3(-1, 0.5f, 0);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            position = new Vector3(-0.85f, 0.5f, 0.15f);
+        }
+        else
+        {
             return;
+        }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        Vector3 position = new Vector3(-0.85f, 0.5f, 0.15f);
+         
         PlaceObject(prefab, position, x, y);
     }
 
     void BottomRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
+        bool tileTransitionOne = false;
+
         if (!CheckBottomWall(x, y, array))
-            return;
+        {
+            tileTransitionOne = true;
+        }
+
+        bool tileTransitionTwo = false;
 
         if (!CheckRightWall(x, y, array))
-            return;
+        {
+            tileTransitionTwo = true;
+        }
 
-        GameObject poolChild = array[x, y].biome.BigColumnPrefab();
-        Vector3 position = new Vector3(-0.15f, 0.5f, 0.15f);
-        PlaceObject(poolChild, position, x, y);
+        Vector3 position;
+
+        if (tileTransitionOne && tileTransitionTwo)
+        {
+            if (array[x + 1, y - 1] == null)
+                return;
+
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome == array[x + 1, y].biome)
+                return;
+
+            if (array[x, y].biome == array[x, y - 1].biome)
+                return;
+
+            position = new Vector3(0, 0.5f, 0);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            position = new Vector3(-0.15f, 0.5f, 0.15f);
+        }
+        else
+        {
+            return;
+        }
+
+        GameObject prefab = array[x, y].biome.BigColumnPrefab();
+        PlaceObject(prefab, position, x, y);
     }
 
     void GenerateInsideCorners(int x, int y, GenerationData[,] array)
