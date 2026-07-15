@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class GenerationManager : MonoBehaviour
@@ -449,6 +448,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         Vector3 position;
+        GameObject prefab;
 
         if (tileTransitionOne && tileTransitionTwo)
         {
@@ -465,17 +465,31 @@ public class GenerationManager : MonoBehaviour
                 return;
 
             position = new Vector3(-1, 0.5f, 1);
+            prefab = array[x, y].biome.BigColumnPrefab();
         }
         else if (!tileTransitionOne && !tileTransitionTwo)
         {
             position = new Vector3(-0.925f, 0.5f, 0.925f);
+
+            if (array[x - 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x - 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y +1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y + 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
         }
         else
         {
             return;
-        }            
+        }           
 
-        GameObject prefab = array[x, y].biome.BigColumnPrefab();
+        
         PlaceObject(prefab, position, x, y);
     }
 
@@ -502,6 +516,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         Vector3 position;
+        GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
         {
@@ -518,17 +533,30 @@ public class GenerationManager : MonoBehaviour
                 return;
 
             position = new Vector3(0, 0.5f, 1);
+            prefab = array[x, y].biome.BigColumnPrefab();
         }
         else if(!tileTransitionOne && !tileTransitionTwo)
         {
             position = new Vector3(-0.075f, 0.5f, 0.925f);
+
+            if (array[x + 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x + 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y + 1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y + 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
         }
         else
         {
             return;
         }
 
-        GameObject prefab = array[x, y].biome.BigColumnPrefab();
         PlaceObject(prefab, position, x, y);
     }
 
@@ -555,6 +583,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         Vector3 position;
+        GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
         {
@@ -571,17 +600,30 @@ public class GenerationManager : MonoBehaviour
                 return;
 
             position = new Vector3(-1, 0.5f, 0);
+            prefab = array[x, y].biome.BigColumnPrefab();
         }
         else if(!tileTransitionOne && !tileTransitionTwo)
         {
             position = new Vector3(-0.925f, 0.5f, 0.075f);
+
+            if (array[x - 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x - 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y - 1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y - 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
         }
         else
         {
             return;
         }
 
-        GameObject prefab = array[x, y].biome.BigColumnPrefab();        
         PlaceObject(prefab, position, x, y);
     }
 
@@ -608,6 +650,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         Vector3 position;
+        GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
         {
@@ -624,9 +667,23 @@ public class GenerationManager : MonoBehaviour
                 return;
 
             position = new Vector3(0, 0.5f, 0);
+            prefab = array[x, y].biome.BigColumnPrefab();
         }
         else if(!tileTransitionOne && !tileTransitionTwo)
         {
+            if (array[x + 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x + 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y - 1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y - 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
+
             position = new Vector3(-0.075f, 0.5f, 0.075f);
         }
         else
@@ -634,7 +691,6 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        GameObject prefab = array[x, y].biome.BigColumnPrefab();
         PlaceObject(prefab, position, x, y);
     }
 
@@ -904,6 +960,9 @@ public class GenerationManager : MonoBehaviour
 
         if (CheckTopWall(x, y, array))
         {
+            if (!CheckTopWall(x - 1, y, array))
+                return;
+
             position = new Vector3(-1, 0.5f, 0.85f);
         }
         else if (array[x, y].biome.StopWallGeneration())
@@ -935,6 +994,9 @@ public class GenerationManager : MonoBehaviour
         if (CheckRightWall(x, y, array))
         {
             position = new Vector3(-0.15f, 0.5f, 1);
+
+            if (!CheckRightWall(x, y + 1, array))
+                return;
         }
         else if (array[x, y].biome.StopWallGeneration())
         {
@@ -964,6 +1026,9 @@ public class GenerationManager : MonoBehaviour
 
         if (CheckBottomWall(x, y, array))
         {
+            if (!CheckBottomWall(x + 1, y, array))
+                return;
+
             position = new Vector3(0, 0.5f, 0.15f);
         }
         else if (array[x, y].biome.StopWallGeneration())
@@ -994,6 +1059,9 @@ public class GenerationManager : MonoBehaviour
 
         if(CheckLeftWall(x, y, array))
         {
+            if (!CheckLeftWall(x, y -1, array))
+                return;
+
             position = new Vector3(-0.85f, 0.5f, 0);
         }
         else if (array[x,y].biome.StopWallGeneration())
