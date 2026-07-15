@@ -9,8 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2031e6602347cd14b9244e289bab4a73, type: 3}
+  m_Script: {fileID: 11500000, guid: 63a5f335ea35aa4459145a5bb09a53b9, type: 3}
   m_Name: Destructive
   m_EditorClassIdentifier: Assembly-CSharp::Biome
   isDestructive: 1
+  stopWallGeneration: 0
   floorPrefab: {fileID: 5240157006985349795, guid: 63cdcf7896b5028419948b06e8f78835, type: 3}
+  wallPrefab: {fileID: 0}
+  bigColumnPrefab: {fileID: 0}
+  smallColumnPrefab: {fileID: 0}

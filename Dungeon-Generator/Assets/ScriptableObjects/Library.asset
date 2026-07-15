@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2031e6602347cd14b9244e289bab4a73, type: 3}
+  m_Script: {fileID: 11500000, guid: 63a5f335ea35aa4459145a5bb09a53b9, type: 3}
   m_Name: Library
   m_EditorClassIdentifier: Assembly-CSharp::Biome
   isDestructive: 0
