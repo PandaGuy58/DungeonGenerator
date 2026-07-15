@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GenerationData
 {
-    public Biome biome {  get; private set; }
+    public Biome biome { get; private set; }
     public bool destruction { get; private set; }
 
     public void Initialise(Biome biome, bool destruction)

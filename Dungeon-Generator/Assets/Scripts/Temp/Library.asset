@@ -16,3 +16,5 @@ MonoBehaviour:
   stopWallGeneration: 0
   floorPrefab: {fileID: 1507387749869200, guid: e4398f50efb557642b16476664e10e25, type: 3}
   wallPrefab: {fileID: 2946003020603589757, guid: 99d3f0f1836b49d479b34ddb8aec1aef, type: 3}
+  bigColumnPrefab: {fileID: 8989787390307420166, guid: e34273ce48a5a264e9c8d6a0e005ea3e, type: 3}
+  smallColumnPrefab: {fileID: 5239242884876557560, guid: fef71ae1b6512234c9a0e0c6847e8477, type: 3}
