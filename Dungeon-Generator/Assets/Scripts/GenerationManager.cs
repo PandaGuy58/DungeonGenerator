@@ -99,6 +99,7 @@ public class GenerationManager : MonoBehaviour
                 GenerateOutsideCorners(x, z, array);
                 GenerateInsideCorners(x, z, array);
                 GenerateWallSplits(x, z, array);
+                GenerateColumns(x, z, array); 
             }
         }
     }
@@ -150,6 +151,17 @@ public class GenerationManager : MonoBehaviour
             return false;
 
         return CheckWall(x + 1, y, array, array[x, y].biome);
+    }
+
+    bool CheckSameBiome(int x, int y, GenerationData[,] array, Biome biome)
+    {
+        if (array[x, y] == null)
+            return false;
+
+        if (array[x, y].biome == biome)
+            return true;
+
+        return false;
     }
 
     void GenerateWalls(int x, int y, GenerationData[,] array)
@@ -877,13 +889,136 @@ public class GenerationManager : MonoBehaviour
 
     void GenerateColumns(int x, int y, GenerationData[,] array)
     {
+        TopLeftColumn(x, y, array);
+        TopRightColumn(x, y, array);
+        BottomRightColumn(x, y, array);
+        BottomLeftColumn(x, y, array);
+    }
 
+    void TopLeftColumn(int x, int y, GenerationData[,] array)
+    {
+        if (!CheckSameBiome(x - 1, y, array, array[x, y].biome))
+            return;
+
+        Vector3 position;
+
+        if (CheckTopWall(x, y, array))
+        {
+            position = new Vector3(-1, 0.5f, 0.85f);
+        }
+        else if (array[x, y].biome.StopWallGeneration())
+        {
+            if (CheckSameBiome(x, y + 1, array, array[x, y].biome))
+                return;
+
+            if (CheckSameBiome(x - 1, y + 1, array, array[x, y].biome))
+                return;
+
+            position = new Vector3(-1, 0.5f, 1f);
+        }
+        else
+        {
+            return;
+        }
+
+        GameObject prefab = array[x, y].biome.SmallColumnPrefab();
+        PlaceObject(prefab, position, x, y);
+    }
+
+    void TopRightColumn(int x, int y, GenerationData[,] array)
+    {
+        if (!CheckSameBiome(x, y + 1, array, array[x, y].biome))
+            return;
+
+        Vector3 position;
+
+        if (CheckRightWall(x, y, array))
+        {
+            position = new Vector3(-0.15f, 0.5f, 1);
+        }
+        else if (array[x, y].biome.StopWallGeneration())
+        {
+            if (CheckSameBiome(x + 1, y, array, array[x, y].biome))
+                return;
+
+            if (CheckSameBiome(x + 1, y + 1, array, array[x, y].biome))
+                return;
+
+            position = new Vector3(0, 0.5f, 1);
+        }
+        else
+        {
+            return;
+        }
+
+        GameObject prefab = array[x, y].biome.SmallColumnPrefab();
+        PlaceObject(prefab, position, x, y);
+    }
+
+    void BottomRightColumn(int x, int y, GenerationData[,] array)
+    {
+        if (!CheckSameBiome(x + 1, y, array, array[x, y].biome))
+            return;
+
+        Vector3 position;
+
+        if (CheckBottomWall(x, y, array))
+        {
+            position = new Vector3(0, 0.5f, 0.15f);
+        }
+        else if (array[x, y].biome.StopWallGeneration())
+        {
+            if (CheckSameBiome(x, y - 1, array, array[x, y].biome))
+                return;
+
+            if (CheckSameBiome(x + 1, y - 1, array, array[x, y].biome))
+                return;
+
+            position = new Vector3(0, 0.5f, 0);
+        }
+        else
+        {
+            return;
+        }
+
+        GameObject prefab = array[x, y].biome.SmallColumnPrefab();
+        PlaceObject(prefab, position, x, y);
+    }
+
+    void BottomLeftColumn(int x, int y, GenerationData[,] array)
+    {
+        if (!CheckSameBiome(x, y - 1, array, array[x, y].biome))
+            return;
+
+        Vector3 position;
+
+        if(CheckLeftWall(x, y, array))
+        {
+            position = new Vector3(-0.85f, 0.5f, 0);
+        }
+        else if (array[x,y].biome.StopWallGeneration())
+        {
+            if (CheckSameBiome(x - 1, y, array, array[x, y].biome))
+                return;
+
+            if (CheckSameBiome(x - 1, y - 1, array, array[x, y].biome))
+                return;
+
+            position = new Vector3(-1, 0.5f, 0);
+        }
+        else 
+        { 
+            return; 
+        }
+
+        GameObject prefab = array[x, y].biome.SmallColumnPrefab();
+        PlaceObject(prefab, position, x, y);
     }
 }
 
 
 
-
+//Vector3 position = 
 
 
 
