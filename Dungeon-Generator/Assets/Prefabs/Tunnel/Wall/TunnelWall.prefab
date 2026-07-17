@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6251600872772303328}
   - component: {fileID: 8545944976206641099}
+  - component: {fileID: 7375153859157977507}
   m_Layer: 0
   m_Name: TunnelWall
   m_TagString: Untagged
@@ -46,6 +47,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlContent
   render: {fileID: 6419865061031324120}
+--- !u!114 &7375153859157977507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946003020603589757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3bea01faa9d1ae41835f881d3fb7e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
 --- !u!1001 &6431922699766838126
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33589787147049660}
   - component: {fileID: 23819972543604334}
   - component: {fileID: 2881841569836961420}
+  - component: {fileID: 7988308572723914691}
   m_Layer: 0
   m_Name: TempleTile
   m_TagString: Temple
@@ -103,3 +104,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4223eb260000e674989afa56cb511eab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlShader
+--- !u!114 &7988308572723914691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451186026775586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3bea01faa9d1ae41835f881d3fb7e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoolChild

@@ -4,52 +4,64 @@ using UnityEngine;
 public class GenerationManager : MonoBehaviour
 {
     public static GenerationManager instance;
-    List<GameObject> generatedTiles = new List<GameObject>();
-    List<GameObject> contents = new List<GameObject>();
+    List<PoolChild> tiles = new List<PoolChild>();
+    List<PoolChild> contents = new List<PoolChild>();
 
     private void Awake()
     {
         instance = this;
     }
 
-    void DestroyObjects(List<GameObject> objects)
+    void DestroyObjects(List<PoolChild> objects)
     {
+        Debug.Log(Time.time);
         for (int i = 0; i < objects.Count; i++)
         {
-            Destroy(objects[i]);
+            ObjectPool.instance.ReturnInstance(objects[i]);
         }
         objects.Clear();
+
     }
 
     public void DestroyContents()
     {
         for (int i = 0; i < contents.Count; i++)
         {
-            Destroy(contents[i]);
+            ObjectPool.instance.ReturnInstance(contents[i]);
         }
+        contents.Clear();
     }
 
     void PlaceObjectRotate(GameObject prefab, Vector3 position, Vector3 rotation, int x, int y)
     {
+        PoolChild instance = ObjectPool.instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
         calculate += position;
-        GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
-        newObject.transform.eulerAngles = rotation;
-        contents.Add(newObject);
+        //   GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
+        instance.transform.position = calculate;
+        instance.transform.eulerAngles = rotation;
+        contents.Add(instance);
     }
 
-    void PlaceObject(GameObject prefab, Vector3 position, int x, int y)
+    PoolChild PlaceObject(GameObject prefab, Vector3 position, int x, int y, bool addToContents)
     {
+        PoolChild instance = ObjectPool.instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
-        calculate += position;
-        GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
-        contents.Add(newObject);
+        calculate += position;        
+        instance.transform.position = calculate;
+
+        if (addToContents)
+        {
+            contents.Add(instance);
+        }
+
+        return instance;        
     }
 
     public void RegenerateTiles()
     {
         GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
-        DestroyObjects(generatedTiles);
+        DestroyObjects(tiles);
         for (int x = 0; x < array.GetLength(0); x++)
         {
             for (int z = 0; z < array.GetLength(1); z++)
@@ -65,8 +77,9 @@ public class GenerationManager : MonoBehaviour
             return;
 
         Vector3 coordinate = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
-        GameObject newTile = Instantiate(array[x, z].biome.FloorPrefab(), coordinate, Quaternion.identity);
-        generatedTiles.Add(newTile);
+        GameObject prefab = array[x, z].biome.FloorPrefab();
+        PoolChild newTile = PlaceObject(prefab, Vector3.zero, x, z, false);
+        tiles.Add(newTile);
 
         if (array[x, z].biome.IsDestructive())
             return;
@@ -189,7 +202,7 @@ public class GenerationManager : MonoBehaviour
     void TopWall(int x, int y, GenerationData[,] array)
     {
         GameObject prefab = array[x, y].biome.WallPrefab();
-        PlaceObject(prefab, Vector3.zero, x, y);
+        PlaceObjectRotate(prefab, Vector3.zero, Vector3.zero, x, y);
     }
 
 
@@ -271,7 +284,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void TopRightOutsideCorner(int x, int y, GenerationData[,] array)
@@ -318,7 +331,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
 
     }
 
@@ -367,7 +380,7 @@ public class GenerationManager : MonoBehaviour
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
          
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void BottomRightOutsideCorner(int x, int y, GenerationData[,] array)
@@ -414,7 +427,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void GenerateInsideCorners(int x, int y, GenerationData[,] array)
@@ -490,7 +503,7 @@ public class GenerationManager : MonoBehaviour
         }           
 
         
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void TopRightInsideCorner(int x, int y, GenerationData[,] array)
@@ -557,7 +570,7 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void BottomLeftInsideCorner(int x, int y, GenerationData[,] array)
@@ -624,7 +637,7 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void BottomRightInsideCorner(int x, int y, GenerationData[,] array)
@@ -691,7 +704,7 @@ public class GenerationManager : MonoBehaviour
             return;
         }
 
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void GenerateWallSplits(int x, int y, GenerationData[,] array)
@@ -735,7 +748,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void NorthLeftWallSplit(int x, int y, GenerationData[,] array)
@@ -764,7 +777,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();        
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void SouthRightWallSplit(int x, int y, GenerationData[,] array)
@@ -793,7 +806,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();        
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void SouthLeftWallSplit(int x, int y, GenerationData[,] array)
@@ -822,7 +835,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void EastTopWallSplit(int x, int y, GenerationData[,] array)
@@ -851,7 +864,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void EastBottomWallSplit(int x, int y, GenerationData[,] array)
@@ -880,7 +893,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
 
@@ -911,7 +924,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void WestBottomWallSplit(int x, int y, GenerationData[,] array)
@@ -940,7 +953,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.BigColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void GenerateColumns(int x, int y, GenerationData[,] array)
@@ -981,7 +994,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.SmallColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void TopRightColumn(int x, int y, GenerationData[,] array)
@@ -1014,7 +1027,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.SmallColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void BottomRightColumn(int x, int y, GenerationData[,] array)
@@ -1047,7 +1060,7 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.SmallColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 
     void BottomLeftColumn(int x, int y, GenerationData[,] array)
@@ -1080,6 +1093,6 @@ public class GenerationManager : MonoBehaviour
         }
 
         GameObject prefab = array[x, y].biome.SmallColumnPrefab();
-        PlaceObject(prefab, position, x, y);
+        PlaceObject(prefab, position, x, y, true);
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7501876373478964036}
   - component: {fileID: 5409994833857386431}
   - component: {fileID: 6662551678351188578}
-  - component: {fileID: 5242550133894769068}
+  - component: {fileID: 3756659885133508491}
   m_Layer: 0
   m_Name: TempleMajorColumn
   m_TagString: Untagged
@@ -92,7 +92,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5242550133894769068
+--- !u!114 &3756659885133508491
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,10 +101,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8989787390307420166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d5744a82676494694441babe951aae, type: 3}
+  m_Script: {fileID: 11500000, guid: c3bea01faa9d1ae41835f881d3fb7e7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PoolChild
-  destructive: 0
 --- !u!1001 &1574795309215179537
 PrefabInstance:
   m_ObjectHideFlags: 0

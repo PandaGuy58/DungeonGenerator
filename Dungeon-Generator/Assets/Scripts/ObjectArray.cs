@@ -31,7 +31,6 @@ public class ObjectArray : MonoBehaviour
     {
         instance = this;
         array = new GenerationData[51, 51];
-
     }
 
     public GenerationData[,] RequestTemporaryArray()

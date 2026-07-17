@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6251600872772303328}
   - component: {fileID: 3200711898377953695}
+  - component: {fileID: -5579775996673129153}
   m_Layer: 0
   m_Name: TempleWall
   m_TagString: Untagged
@@ -46,6 +47,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlContent
   render: {fileID: 9109557711526288021}
+--- !u!114 &-5579775996673129153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2946003020603589757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3bea01faa9d1ae41835f881d3fb7e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoolChild
 --- !u!1001 &9095216807020841733
 PrefabInstance:
   m_ObjectHideFlags: 0
