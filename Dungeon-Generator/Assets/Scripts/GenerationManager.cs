@@ -3,56 +3,53 @@ using UnityEngine;
 
 public class GenerationManager : MonoBehaviour
 {
-    public static GenerationManager instance;
-    List<PoolChild> tiles = new List<PoolChild>();
-    List<PoolChild> contents = new List<PoolChild>();
+    public static GenerationManager _instance;
+    List<PoolChild> _tiles = new List<PoolChild>();
+    List<PoolChild> _contents = new List<PoolChild>();
 
     private void Awake()
     {
-        instance = this;
+        _instance = this;
     }
 
     void DestroyObjects(List<PoolChild> objects)
     {
-        Debug.Log(Time.time);
         for (int i = 0; i < objects.Count; i++)
         {
-            ObjectPool.instance.ReturnInstance(objects[i]);
+            ObjectPool._instance.ReturnInstance(objects[i]);
         }
         objects.Clear();
-
     }
 
     public void DestroyContents()
     {
-        for (int i = 0; i < contents.Count; i++)
+        for (int i = 0; i < _contents.Count; i++)
         {
-            ObjectPool.instance.ReturnInstance(contents[i]);
+            ObjectPool._instance.ReturnInstance(_contents[i]);
         }
-        contents.Clear();
+        _contents.Clear();
     }
 
     void PlaceObjectRotate(GameObject prefab, Vector3 position, Vector3 rotation, int x, int y)
     {
-        PoolChild instance = ObjectPool.instance.GetInstance(prefab);
+        PoolChild instance = ObjectPool._instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
         calculate += position;
-        //   GameObject newObject = Instantiate(prefab, calculate, Quaternion.identity);
         instance.transform.position = calculate;
         instance.transform.eulerAngles = rotation;
-        contents.Add(instance);
+        _contents.Add(instance);
     }
 
     PoolChild PlaceObject(GameObject prefab, Vector3 position, int x, int y, bool addToContents)
     {
-        PoolChild instance = ObjectPool.instance.GetInstance(prefab);
+        PoolChild instance = ObjectPool._instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
         calculate += position;        
         instance.transform.position = calculate;
 
         if (addToContents)
         {
-            contents.Add(instance);
+            _contents.Add(instance);
         }
 
         return instance;        
@@ -61,7 +58,7 @@ public class GenerationManager : MonoBehaviour
     public void RegenerateTiles()
     {
         GenerationData[,] array = ObjectArray.instance.RequestTemporaryArray();
-        DestroyObjects(tiles);
+        DestroyObjects(_tiles);
         for (int x = 0; x < array.GetLength(0); x++)
         {
             for (int z = 0; z < array.GetLength(1); z++)
@@ -79,7 +76,7 @@ public class GenerationManager : MonoBehaviour
         Vector3 coordinate = new Vector3(x + 0.5f, 0.1f, z - 0.5f);
         GameObject prefab = array[x, z].biome.FloorPrefab();
         PoolChild newTile = PlaceObject(prefab, Vector3.zero, x, z, false);
-        tiles.Add(newTile);
+        _tiles.Add(newTile);
 
         if (array[x, z].biome.IsDestructive())
             return;

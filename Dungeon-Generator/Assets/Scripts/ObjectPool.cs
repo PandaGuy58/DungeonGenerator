@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    public static ObjectPool instance;
+    public static ObjectPool _instance;
 
-    Dictionary<GameObject, int> poolDictionary = new Dictionary<GameObject, int>();
-    List<List<PoolChild>> gameObjectLists = new List<List<PoolChild>>();
-    List<Transform> objectParents = new List<Transform>();
+    Dictionary<GameObject, int> _poolDictionary = new Dictionary<GameObject, int>();
+    List<List<PoolChild>> _gameObjectLists = new List<List<PoolChild>>();
+    List<Transform> _objectParents = new List<Transform>();
 
     private void Awake()
     {
-        instance = this;
+        _instance = this;
     }
 
     public PoolChild GetInstance(GameObject prefab)
     {
         int index;
-        if (!poolDictionary.ContainsKey(prefab))
+        if (!_poolDictionary.ContainsKey(prefab))
         {
-            index = gameObjectLists.Count;
+            index = _gameObjectLists.Count;
             GenerateNewPool(prefab, index);
         }
         else
         {
-            index = poolDictionary[prefab];
+            index = _poolDictionary[prefab];
         }
 
         return GenerateInstance(index, prefab);
@@ -32,30 +32,30 @@ public class ObjectPool : MonoBehaviour
 
     public void ReturnInstance(PoolChild instance)
     {
-        gameObjectLists[instance.id].Add(instance);
+        _gameObjectLists[instance.id].Add(instance);
         instance.gameObject.SetActive(false);
     }
 
     public void ClearPool(GameObject prefab)
     {
-        int index = poolDictionary[prefab];
-        gameObjectLists[index].Clear();
+        int index = _poolDictionary[prefab];
+        _gameObjectLists[index].Clear();
     }
 
     PoolChild GenerateInstance(int index, GameObject prefab)
     {
-        if (gameObjectLists[index].Count == 0)
+        if (_gameObjectLists[index].Count == 0)
         {
             GameObject newInstance = Instantiate(prefab);
             PoolChild poolChild = newInstance.AddComponent<PoolChild>();
             poolChild.Initialise(index);
-            poolChild.transform.parent = objectParents[index];
+            poolChild.transform.parent = _objectParents[index];
             return poolChild;
         }
         else
         {
-            List<PoolChild> targetList = gameObjectLists[index];
-            int itemIndex = gameObjectLists[index].Count - 1;
+            List<PoolChild> targetList = _gameObjectLists[index];
+            int itemIndex = _gameObjectLists[index].Count - 1;
             PoolChild temp = targetList[itemIndex];
             targetList.RemoveAt(itemIndex);
             temp.gameObject.SetActive(true);
@@ -65,36 +65,11 @@ public class ObjectPool : MonoBehaviour
 
     void GenerateNewPool(GameObject prefab, int index)
     {
-        poolDictionary.Add(prefab, index);
-        gameObjectLists.Add(new List<PoolChild>());
-
+        _poolDictionary.Add(prefab, index);
+        _gameObjectLists.Add(new List<PoolChild>());
         Transform newTransform = new GameObject().transform;
         newTransform.name = "Pool: " + prefab.name;
-        objectParents.Add(newTransform);
+        _objectParents.Add(newTransform);
         newTransform.parent = transform;
     }
 }
-
-/*
- * PoolChild GenerateInstance(int index, GameObject prefab)
-{
-    if (gameObjectLists[index].Count == 0)
-    {
-        GameObject newInstance = Instantiate(prefab);
-
-        PoolChild poolChild = newInstance.AddComponent<PoolChild>();
-        poolChild.Initialise(index);
-
-        return poolChild;
-    }
-
-    List<PoolChild> targetList = gameObjectLists[index];
-    int itemIndex = targetList.Count - 1;
-
-    PoolChild temp = targetList[itemIndex];
-    targetList.RemoveAt(itemIndex);
-
-    temp.gameObject.SetActive(true);
-    return temp;
-}
-*/

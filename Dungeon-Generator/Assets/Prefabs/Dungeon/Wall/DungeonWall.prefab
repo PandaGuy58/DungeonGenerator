@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6251600872772303328}
-  - component: {fileID: 4327738770105279106}
   m_Layer: 0
   m_Name: DungeonWall
   m_TagString: Untagged
@@ -33,19 +32,6 @@ Transform:
   - {fileID: 8940217824843175485}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4327738770105279106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2946003020603589757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbf6db73729638e4e9dc1855f6e1b746, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ControlContent
-  render: {fileID: 8957766160525287861}
 --- !u!1001 &8935989140879222681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,10 +100,5 @@ PrefabInstance:
 --- !u!4 &8940217824843175485 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4796592812863908, guid: 03495b62119de3d4dac9c038cc589fc9, type: 3}
-  m_PrefabInstance: {fileID: 8935989140879222681}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &8957766160525287861 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 23470293347812908, guid: 03495b62119de3d4dac9c038cc589fc9, type: 3}
   m_PrefabInstance: {fileID: 8935989140879222681}
   m_PrefabAsset: {fileID: 0}

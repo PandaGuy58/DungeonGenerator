@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+// refactor into a struct
 public class GenerationData
 {
     public Biome biome { get; private set; }
@@ -27,10 +29,23 @@ public class ObjectArray : MonoBehaviour
     GenerationData[,] array;
     GenerationData[,] temporaryArray;
 
+    private Action<ExecuteTempArrayGenerationEvent> _onExecuteTempArray;
+
     private void Awake()
     {
         instance = this;
         array = new GenerationData[51, 51];
+    }
+
+    private void OnEnable()
+    {
+        _onExecuteTempArray = GenerateTemporaryArray;
+        EventBus<ExecuteTempArrayGenerationEvent>.Subscribe(_onExecuteTempArray);
+    }
+
+    private void OnDisable()
+    {
+        EventBus<ExecuteTempArrayGenerationEvent>.Unsubscribe(_onExecuteTempArray);
     }
 
     public GenerationData[,] RequestTemporaryArray()
@@ -84,133 +99,80 @@ public class ObjectArray : MonoBehaviour
         }
     }
 
-    public void GenerateTemporaryArray(Vector3 initialTile, Vector3 currentTargetTile, Biome biome)
+    public void GenerateTemporaryArray(ExecuteTempArrayGenerationEvent evt)
     {
         temporaryArray = CreateNewArray(array);
 
-
-        if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
         {
-            /*
-            GenerationData data = new GenerationData();
-            data.Initialise(biome, false);
-            temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
-            */
-            AssignArrayElement((int)initialTile.x, (int)initialTile.z, biome);
+            AssignArrayElement((int)evt.initialTile.x, (int)evt.initialTile.z, evt.biome);
         }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
             {
-                /*
-                GenerationData data = new GenerationData();
-                data.Initialise(biome, false);
-                temporaryArray[x, (int)currentTargetTile.z] = data;
-                */
-
-                AssignArrayElement(x, (int)currentTargetTile.z, biome);
+                AssignArrayElement(x, (int)evt.currentTargetTile.z, evt.biome);
             }
         }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
+        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
             {
-                /*
-                GenerationData data = new GenerationData();
-                data.Initialise(biome, false);
-                temporaryArray[x, (int)currentTargetTile.z] = data;
-                */
-
-                AssignArrayElement(x, (int)currentTargetTile.z, biome);
+                AssignArrayElement(x, (int)evt.currentTargetTile.z, evt.biome);
             }
         }
-        else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        else if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
         {
-            for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+            for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
             {
-                /*
-                GenerationData data = new GenerationData();
-                data.Initialise(biome, false);
-                temporaryArray[(int)initialTile.x, z] = data;
-                */
-
-                AssignArrayElement((int)initialTile.x, z, biome);
+                AssignArrayElement((int)evt.initialTile.x, z, evt.biome);
 
             }
         }
-        else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        else if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
         {
-            for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+            for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
             {
-                /*
-                GenerationData data = new GenerationData();
-                data.Initialise(biome, false);
-                temporaryArray[(int)initialTile.x, z] = data;
-                */
-
-                AssignArrayElement((int)initialTile.x, z, biome);
+                AssignArrayElement((int)evt.initialTile.x, z, evt.biome);
             }
         }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
             {
-                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+                for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
                 {
-                    /*
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, false);
-                    temporaryArray[x, z] = data;
-                    */
-
-                    AssignArrayElement(x, z, biome);
+                    AssignArrayElement(x, z, evt.biome);
                 }
             }
         }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z < currentTargetTile.z)
+        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
             {
-                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
+                for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
                 {
-                    /*
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, false);
-                    temporaryArray[x, z] = data;
-                    */
-
-                    AssignArrayElement(x, z, biome);
+                    AssignArrayElement(x, z, evt.biome);
                 }
             }
         }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
             {
-                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+                for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
                 {
-                    /*
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, false);
-                    temporaryArray[x, z] = data;
-                    */
-
-                    AssignArrayElement(x, z, biome);
+                    AssignArrayElement(x, z, evt.biome);
                 }
             }
         }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z > currentTargetTile.z)
+        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
         {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
             {
-                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
+                for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
                 {
-                    /*
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, false);
-                    temporaryArray[x, z] = data;
-                    */
-                    AssignArrayElement(x, z, biome);
+                    AssignArrayElement(x, z, evt.biome);
                 }
             }
         }
@@ -233,169 +195,3 @@ public class ObjectArray : MonoBehaviour
         }
     }
 }
-
-
-    /*
-    public void GenerateTemporaryArrayDestruction(Vector3 initialTile, Vector3 currentTargetTile, Biome biome)
-    {
-        temporaryArray = CreateNewArray(array);
-
-        if (initialTile.x == currentTargetTile.x && initialTile.z == currentTargetTile.z)
-        {
-            if(temporaryArray[(int)initialTile.x, (int)initialTile.z] == null)
-            {
-                GenerationData data = new GenerationData();
-                data.Initialise(biome, true);
-                temporaryArray[(int)initialTile.x, (int)initialTile.z] = data;
-            }
-            else
-            {
-                temporaryArray[(int)initialTile.x, (int)initialTile.z].EnableDestruction(true);
-            }
-        }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z == currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
-            {
-                if(temporaryArray[x, (int)currentTargetTile.z] == null)
-                {
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, true);
-                    temporaryArray[x, (int)currentTargetTile.z] = data;
-                }
-                else
-                {
-                    temporaryArray[x, (int)currentTargetTile.z].EnableDestruction(true);
-                }
-            }
-        }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z == currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
-            {
-                if(temporaryArray[x, (int)currentTargetTile.z] == null)
-                {
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, true);
-                    temporaryArray[x, (int)currentTargetTile.z] = data;
-                }
-                else
-                {
-                    temporaryArray[x, (int)currentTargetTile.z].EnableDestruction(true);
-                }
-            }
-        }
-        else if (initialTile.x == currentTargetTile.x && initialTile.z < currentTargetTile.z)
-        {
-            for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
-            {
-                if(temporaryArray[(int)initialTile.x, z] == null)
-                {
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, true);
-                    temporaryArray[(int)initialTile.x, z] = data;
-                }
-                else
-                {
-                    temporaryArray[(int)initialTile.x, z].EnableDestruction(true);
-                }
-            }
-        }
-        else if (initialTile.x == currentTargetTile.x && initialTile.z > currentTargetTile.z)
-        {
-            for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
-            {
-                if(temporaryArray[(int)initialTile.x, z] == null)
-                {
-                    GenerationData data = new GenerationData();
-                    data.Initialise(biome, true);
-                    temporaryArray[(int)initialTile.x, z] = data;
-                }
-                else
-                {
-                    temporaryArray[(int)initialTile.x, z].EnableDestruction(true);
-                }
-                
-            }
-        }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z < currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
-            {
-                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
-                {
-                    if(temporaryArray[x, z] == null)
-                    {
-                        GenerationData data = new GenerationData();
-                        data.Initialise(biome, true);
-                        temporaryArray[x, z] = data;
-                    }
-                    else
-                    {
-                        temporaryArray[x, z].EnableDestruction(true);
-                    }
-                }
-            }
-        }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z < currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
-            {
-                for (int z = (int)initialTile.z; z < currentTargetTile.z + 1; z++)
-                {
-                    if(temporaryArray[x, z] == null)
-                    {
-                        GenerationData data = new GenerationData();
-                        data.Initialise(biome, true);
-                        temporaryArray[x, z] = data;
-                    }
-                    else
-                    {
-                        temporaryArray[x, z].EnableDestruction(true);
-                    }
-                }
-            }
-        }
-        else if (initialTile.x < currentTargetTile.x && initialTile.z > currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x < currentTargetTile.x + 1; x++)
-            {
-                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
-                {
-                    if(temporaryArray[x, z] == null)
-                    {
-                        GenerationData data = new GenerationData();
-                        data.Initialise(biome, true);
-                        temporaryArray[x, z] = data;
-                    }
-                    else
-                    {
-                        temporaryArray[x, z].EnableDestruction(true);
-                    }
-                }
-            }
-        }
-        else if (initialTile.x > currentTargetTile.x && initialTile.z > currentTargetTile.z)
-        {
-            for (int x = (int)initialTile.x; x > currentTargetTile.x - 1; x--)
-            {
-                for (int z = (int)initialTile.z; z > currentTargetTile.z - 1; z--)
-                {
-                    if(temporaryArray[x, z] == null)
-                    {
-                        GenerationData data = new GenerationData();
-                        data.Initialise(biome, true);
-                        temporaryArray[x, z] = data;
-                    }
-                    else
-                    {
-                        temporaryArray[x, z].EnableDestruction(true);
-                    }
-                }
-            }
-        }
-    }
-
-
-
-        */

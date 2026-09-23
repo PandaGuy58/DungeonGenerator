@@ -7,20 +7,21 @@ public class InputController : MonoBehaviour
     // + place the selected tiles + instruct object array script to generate content
 
     // layer to raycast
-    [SerializeField] LayerMask raycastMask;
+    [SerializeField] private LayerMask _raycastMask;
 
     // core values to determine where to place tiles
-    Vector3 initialRaycastPos;
-    Vector3 currentRaycastPos;
-    Vector3 previousRaycastPos;
+    private Vector3 _initialRaycastPos;
+    private Vector3 _currentRaycastPos;
+    private Vector3 _previousRaycastPos;
 
     // for player to switch between different biomes
-    int selectedBiome = 0;
-    [SerializeField] List<Biome> biomes;
+    private int _selectedBiome = 0;
+    [SerializeField] private List<Biome> _biomes;
+
 
     private void Awake()
     {
-        UIManager.instance.UpdateText(biomes[selectedBiome].name);
+        UIManager._instance.UpdateText(_biomes[_selectedBiome].name);
     }
 
     void Update()
@@ -30,7 +31,7 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionSwitch();
-            ExecuteTileGeneration(currentRaycastPos, currentRaycastPos);
+            ExecuteTileGeneration(_currentRaycastPos, _currentRaycastPos);
         }
         else if (Input.GetMouseButtonDown(0))
         {
@@ -53,71 +54,78 @@ public class InputController : MonoBehaviour
     void ExecuteRaycast()
     {
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, raycastMask))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, _raycastMask))
         {
             Vector3 newVector = new Vector3(Mathf.RoundToInt(hit.point.x), 0, Mathf.RoundToInt(hit.point.z));
             newVector.x = Mathf.Clamp(newVector.x, 1, 49);
             newVector.z = Mathf.Clamp(newVector.z, 1, 49);
-            currentRaycastPos = newVector;
+            _currentRaycastPos = newVector;
         }
         else
         {
-            currentRaycastPos.x = -1;
+            _currentRaycastPos.x = -1;
         }
     }
 
     void ActionSwitch()
     {
-        selectedBiome++;
-        if (selectedBiome > biomes.Count - 1)
+        _selectedBiome++;
+        if (_selectedBiome > _biomes.Count - 1)
         {
-            selectedBiome = 0;
+            _selectedBiome = 0;
         }
 
-        UIManager.instance.UpdateText(biomes[selectedBiome].name);
+        UIManager._instance.UpdateText(_biomes[_selectedBiome].name);
     }
 
     void MouseButtonDown()
     {
-        initialRaycastPos = currentRaycastPos;
-        GenerationManager.instance.DestroyContents();
+        _initialRaycastPos = _currentRaycastPos;
+        GenerationManager._instance.DestroyContents();
     }
 
     void MouseButton()
     {
-        if (currentRaycastPos == previousRaycastPos)
+        if (_currentRaycastPos == _previousRaycastPos)
             return;
 
-        ExecuteTileGeneration(initialRaycastPos, currentRaycastPos);
+        ExecuteTileGeneration(_initialRaycastPos, _currentRaycastPos);
     }
 
     void MouseButtonUp()
     {
-        if (biomes[selectedBiome].IsDestructive())
+        if (_biomes[_selectedBiome].IsDestructive())
         {
             ObjectArray.instance.RemoveFromArray();
-            GenerationManager.instance.RegenerateTiles();
+            GenerationManager._instance.RegenerateTiles();
         }
 
         ObjectArray.instance.FinaliseArray();
-        GenerationManager.instance.GenerateContents();
+        GenerationManager._instance.GenerateContents();
     }
 
     void MouseInactive()
     {
-        if (currentRaycastPos.x == -1)
+        if (_currentRaycastPos.x == -1)
             return;
 
-        if (currentRaycastPos == previousRaycastPos)
+        if (_currentRaycastPos == _previousRaycastPos)
             return;
 
-        ExecuteTileGeneration(currentRaycastPos, currentRaycastPos);
+        ExecuteTileGeneration(_currentRaycastPos, _currentRaycastPos);
     }
 
     void ExecuteTileGeneration(Vector3 initialTile, Vector3 currentTargetTile)
     {
-        ObjectArray.instance.GenerateTemporaryArray(initialTile, currentTargetTile, biomes[selectedBiome]);
-        GenerationManager.instance.RegenerateTiles();
-        previousRaycastPos = currentRaycastPos;
+        EventBus<ExecuteTempArrayGenerationEvent>.Publish(new ExecuteTempArrayGenerationEvent
+        {
+            currentTargetTile = currentTargetTile,
+            initialTile = initialTile,
+            biome = _biomes[_selectedBiome]
+        });
+        
+        GenerationManager._instance.RegenerateTiles();
+        _previousRaycastPos = _currentRaycastPos;
     }
+
 }

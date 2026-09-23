@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager instance;
-    [SerializeField] TextMeshProUGUI text;
+    public static UIManager _instance;
+    [SerializeField] private TextMeshProUGUI _text;
     private void Awake()
     {
-        instance = this;
+        _instance = this;
     }
 
     public void UpdateText(string newText)
     {
-        text.text = "Currently Selected: " + newText;
+        _text.text = "Currently Selected: " + newText;
     }
 
     

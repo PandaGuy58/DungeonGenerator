@@ -1023,7 +1023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6304c6ddcff474faa82224ab63cf73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  text: {fileID: 788138987}
+  _text: {fileID: 788138987}
 --- !u!1 &1566500108
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,10 +1053,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cfca836b06b5941807075eb34a03e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputController
-  raycastMask:
+  _raycastMask:
     serializedVersion: 2
     m_Bits: 64
-  biomes:
+  _biomes:
   - {fileID: 11400000, guid: b71231f6a3534ed4eb863e963f2c2164, type: 2}
   - {fileID: 11400000, guid: 834f359e825f4104e8b61b83dfaf39f6, type: 2}
   - {fileID: 11400000, guid: 30ed4bed7e967a241a0f8b6acca8c1a1, type: 2}
