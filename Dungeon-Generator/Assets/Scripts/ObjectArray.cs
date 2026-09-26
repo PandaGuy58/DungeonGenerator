@@ -19,33 +19,37 @@ public class GenerationData
     }
 }
 
-
 public class ObjectArray : MonoBehaviour
 {
-    public static ObjectArray instance;
-
     // array is larger than needed by 2 at x and y
     // x.0, y.0, x.Length, y.Length are empty for logic purposes
-    GenerationData[,] array;
-    GenerationData[,] temporaryArray;
+    private GenerationData[,] array;
+    private GenerationData[,] temporaryArray;
 
-    private Action<ExecuteTempArrayGenerationEvent> _onExecuteTempArray;
+    private Action<TempArrayGenerationEvent> onTempArrayGenerationEvent;
+    private Action<FinaliseArrayEvent> onFinaliseArrayEvent;
+    private Action<RemoveFromTempArrayEvent> onRemoveFromTempArrayEvent;
 
     private void Awake()
     {
-        instance = this;
         array = new GenerationData[51, 51];
     }
 
     private void OnEnable()
     {
-        _onExecuteTempArray = GenerateTemporaryArray;
-        EventBus<ExecuteTempArrayGenerationEvent>.Subscribe(_onExecuteTempArray);
+        onTempArrayGenerationEvent = GenerateTemporaryArray;
+        onFinaliseArrayEvent = FinaliseArray;
+        onRemoveFromTempArrayEvent = RemoveFromTempArray;
+        EventBus<TempArrayGenerationEvent>.Subscribe(onTempArrayGenerationEvent);
+        EventBus<FinaliseArrayEvent>.Subscribe(onFinaliseArrayEvent);
+        EventBus<RemoveFromTempArrayEvent>.Subscribe(RemoveFromTempArray);
     }
 
     private void OnDisable()
     {
-        EventBus<ExecuteTempArrayGenerationEvent>.Unsubscribe(_onExecuteTempArray);
+        EventBus<TempArrayGenerationEvent>.Unsubscribe(onTempArrayGenerationEvent);
+        EventBus<FinaliseArrayEvent>.Unsubscribe(onFinaliseArrayEvent);
+        EventBus<RemoveFromTempArrayEvent>.Unsubscribe(RemoveFromTempArray);
     }
 
     public GenerationData[,] RequestTemporaryArray()
@@ -53,9 +57,14 @@ public class ObjectArray : MonoBehaviour
         return temporaryArray;
     }
 
-    public void FinaliseArray()
+    public void FinaliseArray(FinaliseArrayEvent evt)
     {
         array = temporaryArray;
+
+        EventBus<GenerateContentsEvent>.Publish(new GenerateContentsEvent
+        {
+            GenerationDataArray = temporaryArray
+        });
     }
 
     GenerationData[,] CreateNewArray(GenerationData[,] oldArray)
@@ -73,7 +82,6 @@ public class ObjectArray : MonoBehaviour
                 newArray[x, z] = data;
             }
         }
-
         return newArray;
     }
 
@@ -99,86 +107,91 @@ public class ObjectArray : MonoBehaviour
         }
     }
 
-    public void GenerateTemporaryArray(ExecuteTempArrayGenerationEvent evt)
+    public void GenerateTemporaryArray(TempArrayGenerationEvent evt)
     {
         temporaryArray = CreateNewArray(array);
 
-        if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
+        if (evt.InitialTile.x == evt.CurrentTargetTile.x && evt.InitialTile.z == evt.CurrentTargetTile.z)
         {
-            AssignArrayElement((int)evt.initialTile.x, (int)evt.initialTile.z, evt.biome);
+            AssignArrayElement((int)evt.InitialTile.x, (int)evt.InitialTile.z, evt.Biome);
         }
-        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
+        else if (evt.InitialTile.x > evt.CurrentTargetTile.x && evt.InitialTile.z == evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.InitialTile.x; x > evt.CurrentTargetTile.x - 1; x--)
             {
-                AssignArrayElement(x, (int)evt.currentTargetTile.z, evt.biome);
+                AssignArrayElement(x, (int)evt.CurrentTargetTile.z, evt.Biome);
             }
         }
-        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z == evt.currentTargetTile.z)
+        else if (evt.InitialTile.x < evt.CurrentTargetTile.x && evt.InitialTile.z == evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.InitialTile.x; x < evt.CurrentTargetTile.x + 1; x++)
             {
-                AssignArrayElement(x, (int)evt.currentTargetTile.z, evt.biome);
+                AssignArrayElement(x, (int)evt.CurrentTargetTile.z, evt.Biome);
             }
         }
-        else if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
+        else if (evt.InitialTile.x == evt.CurrentTargetTile.x && evt.InitialTile.z < evt.CurrentTargetTile.z)
         {
-            for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
+            for (int z = (int)evt.InitialTile.z; z < evt.CurrentTargetTile.z + 1; z++)
             {
-                AssignArrayElement((int)evt.initialTile.x, z, evt.biome);
+                AssignArrayElement((int)evt.InitialTile.x, z, evt.Biome);
 
             }
         }
-        else if (evt.initialTile.x == evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
+        else if (evt.InitialTile.x == evt.CurrentTargetTile.x && evt.InitialTile.z > evt.CurrentTargetTile.z)
         {
-            for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
+            for (int z = (int)evt.InitialTile.z; z > evt.CurrentTargetTile.z - 1; z--)
             {
-                AssignArrayElement((int)evt.initialTile.x, z, evt.biome);
+                AssignArrayElement((int)evt.InitialTile.x, z, evt.Biome);
             }
         }
-        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
+        else if (evt.InitialTile.x < evt.CurrentTargetTile.x && evt.InitialTile.z < evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.InitialTile.x; x < evt.CurrentTargetTile.x + 1; x++)
             {
-                for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
+                for (int z = (int)evt.InitialTile.z; z < evt.CurrentTargetTile.z + 1; z++)
                 {
-                    AssignArrayElement(x, z, evt.biome);
+                    AssignArrayElement(x, z, evt.Biome);
                 }
             }
         }
-        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z < evt.currentTargetTile.z)
+        else if (evt.InitialTile.x > evt.CurrentTargetTile.x && evt.InitialTile.z < evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.InitialTile.x; x > evt.CurrentTargetTile.x - 1; x--)
             {
-                for (int z = (int)evt.initialTile.z; z < evt.currentTargetTile.z + 1; z++)
+                for (int z = (int)evt.InitialTile.z; z < evt.CurrentTargetTile.z + 1; z++)
                 {
-                    AssignArrayElement(x, z, evt.biome);
+                    AssignArrayElement(x, z, evt.Biome);
                 }
             }
         }
-        else if (evt.initialTile.x < evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
+        else if (evt.InitialTile.x < evt.CurrentTargetTile.x && evt.InitialTile.z > evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x < evt.currentTargetTile.x + 1; x++)
+            for (int x = (int)evt.InitialTile.x; x < evt.CurrentTargetTile.x + 1; x++)
             {
-                for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
+                for (int z = (int)evt.InitialTile.z; z > evt.CurrentTargetTile.z - 1; z--)
                 {
-                    AssignArrayElement(x, z, evt.biome);
+                    AssignArrayElement(x, z, evt.Biome);
                 }
             }
         }
-        else if (evt.initialTile.x > evt.currentTargetTile.x && evt.initialTile.z > evt.currentTargetTile.z)
+        else if (evt.InitialTile.x > evt.CurrentTargetTile.x && evt.InitialTile.z > evt.CurrentTargetTile.z)
         {
-            for (int x = (int)evt.initialTile.x; x > evt.currentTargetTile.x - 1; x--)
+            for (int x = (int)evt.InitialTile.x; x > evt.CurrentTargetTile.x - 1; x--)
             {
-                for (int z = (int)evt.initialTile.z; z > evt.currentTargetTile.z - 1; z--)
+                for (int z = (int)evt.InitialTile.z; z > evt.CurrentTargetTile.z - 1; z--)
                 {
-                    AssignArrayElement(x, z, evt.biome);
+                    AssignArrayElement(x, z, evt.Biome);
                 }
             }
         }
+
+        EventBus<GenerateTilesEvent>.Publish(new GenerateTilesEvent
+        {
+            GenerationDataArray = temporaryArray
+        });
     }
 
-    public void RemoveFromArray()
+    public void RemoveFromTempArray(RemoveFromTempArrayEvent evt)
     {
         for (int x = 0; x < temporaryArray.GetLength(0); x++)
         {
@@ -187,11 +200,15 @@ public class ObjectArray : MonoBehaviour
                 if (temporaryArray[x, y] == null)
                     continue;
 
-                if (!temporaryArray[x, y].destruction)
-                    continue;
-
-                temporaryArray[x, y] = null;
+                if (temporaryArray[x, y].destruction)
+                    temporaryArray[x, y] = null;
             }
         }
+
+        EventBus<GenerateTilesEvent>.Publish(new GenerateTilesEvent
+        {
+            GenerationDataArray = temporaryArray
+        });
+
     }
 }

@@ -6,9 +6,6 @@ public class InputController : MonoBehaviour
     // script dedicated to take inputs + place temporary tiles
     // + place the selected tiles + instruct object array script to generate content
 
-    // layer to raycast
-    [SerializeField] private LayerMask _raycastMask;
-
     // core values to determine where to place tiles
     private Vector3 _initialRaycastPos;
     private Vector3 _currentRaycastPos;
@@ -18,10 +15,13 @@ public class InputController : MonoBehaviour
     private int _selectedBiome = 0;
     [SerializeField] private List<Biome> _biomes;
 
+    // layer to raycast
+    [SerializeField] private LayerMask _raycastMask;
+
 
     private void Awake()
     {
-        UIManager._instance.UpdateText(_biomes[_selectedBiome].name);
+        UpdateUI();
     }
 
     void Update()
@@ -71,61 +71,54 @@ public class InputController : MonoBehaviour
     {
         _selectedBiome++;
         if (_selectedBiome > _biomes.Count - 1)
-        {
             _selectedBiome = 0;
-        }
 
-        UIManager._instance.UpdateText(_biomes[_selectedBiome].name);
+        UpdateUI();
     }
 
     void MouseButtonDown()
     {
         _initialRaycastPos = _currentRaycastPos;
-        GenerationManager._instance.DestroyContents();
+        EventBus<DestroyContentsEvent>.Publish(new DestroyContentsEvent());
     }
 
     void MouseButton()
     {
-        if (_currentRaycastPos == _previousRaycastPos)
-            return;
-
-        ExecuteTileGeneration(_initialRaycastPos, _currentRaycastPos);
+        if (_currentRaycastPos != _previousRaycastPos)
+            ExecuteTileGeneration(_initialRaycastPos, _currentRaycastPos);
     }
 
     void MouseButtonUp()
     {
         if (_biomes[_selectedBiome].IsDestructive())
-        {
-            ObjectArray.instance.RemoveFromArray();
-            GenerationManager._instance.RegenerateTiles();
-        }
+            EventBus<RemoveFromTempArrayEvent>.Publish(new RemoveFromTempArrayEvent());
 
-        ObjectArray.instance.FinaliseArray();
-        GenerationManager._instance.GenerateContents();
+        EventBus<FinaliseArrayEvent>.Publish(new FinaliseArrayEvent());
     }
 
     void MouseInactive()
     {
-        if (_currentRaycastPos.x == -1)
-            return;
-
-        if (_currentRaycastPos == _previousRaycastPos)
-            return;
-
-        ExecuteTileGeneration(_currentRaycastPos, _currentRaycastPos);
+        if (_currentRaycastPos.x != -1 && _currentRaycastPos != _previousRaycastPos)
+            ExecuteTileGeneration(_currentRaycastPos, _currentRaycastPos);
     }
 
     void ExecuteTileGeneration(Vector3 initialTile, Vector3 currentTargetTile)
     {
-        EventBus<ExecuteTempArrayGenerationEvent>.Publish(new ExecuteTempArrayGenerationEvent
+        EventBus<TempArrayGenerationEvent>.Publish(new TempArrayGenerationEvent
         {
-            currentTargetTile = currentTargetTile,
-            initialTile = initialTile,
-            biome = _biomes[_selectedBiome]
+            CurrentTargetTile = currentTargetTile,
+            InitialTile = initialTile,
+            Biome = _biomes[_selectedBiome]
         });
-        
-        GenerationManager._instance.RegenerateTiles();
+
         _previousRaycastPos = _currentRaycastPos;
     }
 
+    void UpdateUI()
+    {
+        EventBus<UpdateUIEvent>.Publish(new UpdateUIEvent
+        {
+            Text = _biomes[_selectedBiome].name,
+        });
+    }
 }

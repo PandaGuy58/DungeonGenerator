@@ -26,20 +26,31 @@ public struct GameOverEvent : IEvent
 }
 
 // my code 
-public struct ExecuteTempArrayGenerationEvent : IEvent
+public struct TempArrayGenerationEvent : IEvent
 {
-    public Vector3 initialTile;
-    public Vector3 currentTargetTile;
-    public Biome biome;
-    public ExecuteTempArrayGenerationEvent(Vector3 initialTile, Vector3 currentTargetTile, Biome biome)
-    {
-        this.initialTile = initialTile;
-        this.currentTargetTile = currentTargetTile;
-        this.biome = biome;
-    }    
+    public Vector3 InitialTile;
+    public Vector3 CurrentTargetTile;
+    public Biome Biome;
 }
 
-public struct ExecuteGeneration : IEvent
+public struct GenerateTilesEvent : IEvent
 {
+    public GenerationData[,] GenerationDataArray;
+}
 
+public struct RemoveFromTempArrayEvent : IEvent { }
+
+
+public struct FinaliseArrayEvent : IEvent { }
+
+public struct GenerateContentsEvent : IEvent
+{
+    public GenerationData[,] GenerationDataArray;
+}
+
+public struct DestroyContentsEvent : IEvent { }
+
+public struct UpdateUIEvent : IEvent
+{
+    public string Text;
 }
