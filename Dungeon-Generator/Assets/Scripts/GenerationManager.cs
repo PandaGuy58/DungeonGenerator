@@ -51,11 +51,11 @@ public class GenerationManager : MonoBehaviour
                 if (array[x, z] == null)
                     continue;
 
-              //  GenerateWalls(x, z, array);
-             //   GenerateOutsideCorners(x, z, array);
+                GenerateWalls(x, z, array);
+                GenerateOutsideCorners(x, z, array);
                 GenerateInsideCorners(x, z, array);
-             //   GenerateWallSplits(x, z, array);
-            //    GenerateColumns(x, z, array);
+                GenerateWallSplits(x, z, array);
+                GenerateColumns(x, z, array);
             }
         }
     }
@@ -239,17 +239,15 @@ public class GenerationManager : MonoBehaviour
 
     private void TopLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
-        bool tileTransitionOne = false;
-        if (!CheckTopWall(x, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckLeftWall(x, y, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckTopWall(x, y, array);
+        bool tileTransitionTwo = CheckLeftWall(x, y, array);
         Vector3 position;
 
         if (tileTransitionOne && tileTransitionTwo)
+        {
+            position = new Vector3(-0.85f, 0.5f, 0.85f);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             if (array[x - 1, y + 1] == null)
                 return;
@@ -263,11 +261,7 @@ public class GenerationManager : MonoBehaviour
             if (array[x, y].biome == array[x, y + 1].biome)
                 return;
 
-            position = new Vector3(-1, 0.5f, 1);
-        }
-        else if(!tileTransitionOne && !tileTransitionTwo)
-        {
-            position = new Vector3(-0.85f, 0.5f, 0.85f);
+            position = new Vector3(-1, 0.5f, 1);            
         }
         else
             return;
@@ -278,17 +272,15 @@ public class GenerationManager : MonoBehaviour
 
     private void TopRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
-        bool tileTransitionOne = false;
-        if (!CheckTopWall(x, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckRightWall(x, y, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckTopWall(x, y, array);
+        bool tileTransitionTwo = CheckRightWall(x, y, array);
         Vector3 position;
 
         if(tileTransitionOne && tileTransitionTwo)
+        {
+            position = new Vector3(-0.15f, 0.5f, 0.85f);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             if (array[x + 1, y + 1] == null)
                 return;
@@ -304,10 +296,6 @@ public class GenerationManager : MonoBehaviour
 
             position = new Vector3(0, 0.5f, 1);
         }
-        else if(!tileTransitionOne && !tileTransitionTwo)
-        {
-            position = new Vector3(-0.15f, 0.5f, 0.85f);
-        }
         else
             return;
 
@@ -317,17 +305,15 @@ public class GenerationManager : MonoBehaviour
 
     private void BottomLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
-        bool tileTransitionOne = false;
-        if (!CheckBottomWall(x, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckLeftWall(x, y, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckBottomWall(x, y, array);
+        bool tileTransitionTwo = CheckLeftWall(x, y, array);
         Vector3 position;
 
         if (tileTransitionOne && tileTransitionTwo)
+        {
+            position = new Vector3(-0.85f, 0.5f, 0.15f);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             if (array[x - 1, y - 1] == null)
                 return;
@@ -341,11 +327,7 @@ public class GenerationManager : MonoBehaviour
             if (array[x, y].biome == array[x, y - 1].biome)
                 return;
 
-            position = new Vector3(-1, 0.5f, 0);
-        }
-        else if(!tileTransitionOne && !tileTransitionTwo)
-        {
-            position = new Vector3(-0.85f, 0.5f, 0.15f);
+            position = new Vector3(-1, 0.5f, 0);            
         }
         else
             return;
@@ -356,17 +338,15 @@ public class GenerationManager : MonoBehaviour
 
     private void BottomRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
-        bool tileTransitionOne = false;
-        if (!CheckBottomWall(x, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckRightWall(x, y, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckBottomWall(x, y, array);
+        bool tileTransitionTwo = CheckRightWall(x, y, array);
         Vector3 position;
 
         if (tileTransitionOne && tileTransitionTwo)
+        {
+            position = new Vector3(-0.15f, 0.5f, 0.15f);
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             if (array[x + 1, y - 1] == null)
                 return;
@@ -381,10 +361,6 @@ public class GenerationManager : MonoBehaviour
                 return;
 
             position = new Vector3(0, 0.5f, 0);
-        }
-        else if(!tileTransitionOne && !tileTransitionTwo)
-        {
-            position = new Vector3(-0.15f, 0.5f, 0.15f);
         }
         else
             return;
