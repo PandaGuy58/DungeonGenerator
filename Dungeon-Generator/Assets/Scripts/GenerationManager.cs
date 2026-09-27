@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GenerationManager : MonoBehaviour
 {
-    List<PoolChild> _tiles = new List<PoolChild>();
-    List<PoolChild> _contents = new List<PoolChild>();
+    private List<PoolChild> _tiles = new List<PoolChild>();
+    private List<PoolChild> _contents = new List<PoolChild>();
 
     private Action<GenerateTilesEvent> onGenerateTilesEvent;
     private Action<GenerateContentsEvent> onGenerateContentsEvent;
@@ -28,15 +28,39 @@ public class GenerationManager : MonoBehaviour
         EventBus<DestroyContentsEvent>.Unsubscribe(onDestroyContentsEvent);
     }
 
-    void DestroyObjects(List<PoolChild> objects)
+    private void GenerateTiles(GenerateTilesEvent evt)
     {
-        for (int i = 0; i < objects.Count; i++)
-            ObjectPool._instance.ReturnInstance(objects[i]);
+        GenerationData[,] array = evt.GenerationDataArray;
+        DestroyObjects(_tiles);
 
-        objects.Clear();
+        for (int x = 0; x < array.GetLength(0); x++)
+        {
+            for (int z = 0; z < array.GetLength(1); z++)
+                Tile(x, z, array);
+        }
     }
 
-    public void DestroyContents(DestroyContentsEvent evt)
+    private void GenerateContents(GenerateContentsEvent evt)
+    {
+        GenerationData[,] array = evt.GenerationDataArray;
+
+        for (int x = 0; x < array.GetLength(0); x++)
+        {
+            for (int z = 0; z < array.GetLength(1); z++)
+            {
+                if (array[x, z] == null)
+                    continue;
+
+              //  GenerateWalls(x, z, array);
+             //   GenerateOutsideCorners(x, z, array);
+                GenerateInsideCorners(x, z, array);
+             //   GenerateWallSplits(x, z, array);
+            //    GenerateColumns(x, z, array);
+            }
+        }
+    }
+
+    private void DestroyContents(DestroyContentsEvent evt)
     {
         for (int i = 0; i < _contents.Count; i++)
             ObjectPool._instance.ReturnInstance(_contents[i]);
@@ -44,7 +68,15 @@ public class GenerationManager : MonoBehaviour
         _contents.Clear();
     }
 
-    void PlaceObjectRotate(GameObject prefab, Vector3 position, Vector3 rotation, int x, int y)
+    private void DestroyObjects(List<PoolChild> objects)
+    {
+        for (int i = 0; i < objects.Count; i++)
+            ObjectPool._instance.ReturnInstance(objects[i]);
+
+        objects.Clear();
+    }
+
+    private void PlaceObjectRotate(GameObject prefab, Vector3 position, Vector3 rotation, int x, int y)
     {
         PoolChild instance = ObjectPool._instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
@@ -54,7 +86,7 @@ public class GenerationManager : MonoBehaviour
         _contents.Add(instance);
     }
 
-    PoolChild PlaceObject(GameObject prefab, Vector3 position, int x, int y, bool addToContents)
+    private PoolChild PlaceObject(GameObject prefab, Vector3 position, int x, int y, bool addToContents)
     {
         PoolChild instance = ObjectPool._instance.GetInstance(prefab);
         Vector3 calculate = new Vector3(x + 0.5f, 0.1f, y - 0.5f);
@@ -67,19 +99,7 @@ public class GenerationManager : MonoBehaviour
         return instance;        
     }
 
-    public void GenerateTiles(GenerateTilesEvent evt)
-    {
-        GenerationData[,] array = evt.GenerationDataArray;
-        DestroyObjects(_tiles);
-
-        for (int x = 0; x < array.GetLength(0); x++)
-        {
-            for (int z = 0; z < array.GetLength(1); z++)
-                Tile(x, z, array);
-        }
-    }
-
-    void Tile(int x, int z, GenerationData[,] array)
+    private void Tile(int x, int z, GenerationData[,] array)
     {
         if (array[x, z] == null)
             return;
@@ -104,27 +124,7 @@ public class GenerationManager : MonoBehaviour
         }
     }
 
-    public void GenerateContents(GenerateContentsEvent evt)
-    {
-        GenerationData[,] array = evt.GenerationDataArray;
-
-        for (int x = 0; x < array.GetLength(0); x++)
-        {
-            for (int z = 0; z < array.GetLength(1); z++)
-            {
-                if (array[x, z] == null)
-                    continue;
-
-                GenerateWalls(x, z, array);
-                GenerateOutsideCorners(x, z, array);
-                GenerateInsideCorners(x, z, array);
-                GenerateWallSplits(x, z, array);
-                GenerateColumns(x, z, array); 
-            }
-        }
-    }
-
-    bool CheckWall(int x, int y, GenerationData[,] array, Biome biome)
+    private bool CheckWall(int x, int y, GenerationData[,] array, Biome biome)
     {
         if (array[x, y] == null)
             return true;
@@ -141,7 +141,7 @@ public class GenerationManager : MonoBehaviour
         return true;
     }
 
-    bool CheckTopWall(int x, int y, GenerationData[,] array)
+    private bool CheckTopWall(int x, int y, GenerationData[,] array)
     {
         if (array[x, y] == null)
             return false;
@@ -149,7 +149,7 @@ public class GenerationManager : MonoBehaviour
         return CheckWall(x, y + 1, array, array[x, y].biome);
     }
 
-    bool CheckBottomWall(int x, int y, GenerationData[,] array)
+    private bool CheckBottomWall(int x, int y, GenerationData[,] array)
     {
         if (array[x, y] == null)
             return false;
@@ -157,7 +157,7 @@ public class GenerationManager : MonoBehaviour
         return CheckWall(x, y - 1, array, array[x, y].biome);
     }
 
-    bool CheckLeftWall(int x, int y, GenerationData[,] array)
+    private bool CheckLeftWall(int x, int y, GenerationData[,] array)
     {
         if (array[x, y] == null)
             return false;
@@ -165,7 +165,7 @@ public class GenerationManager : MonoBehaviour
         return CheckWall(x - 1, y, array, array[x, y].biome);
     }
 
-    bool CheckRightWall(int x, int y, GenerationData[,] array)
+    private bool CheckRightWall(int x, int y, GenerationData[,] array)
     {
         if (array[x, y] == null)
             return false;
@@ -173,7 +173,7 @@ public class GenerationManager : MonoBehaviour
         return CheckWall(x + 1, y, array, array[x, y].biome);
     }
 
-    bool CheckSameBiome(int x, int y, GenerationData[,] array, Biome biome)
+    private bool CheckSameBiome(int x, int y, GenerationData[,] array, Biome biome)
     {
         if (array[x, y] == null)
             return false;
@@ -184,7 +184,7 @@ public class GenerationManager : MonoBehaviour
         return false;
     }
 
-    void GenerateWalls(int x, int y, GenerationData[,] array)
+    private void GenerateWalls(int x, int y, GenerationData[,] array)
     {
         if (CheckTopWall(x, y, array))
             TopWall(x, y, array);
@@ -199,14 +199,13 @@ public class GenerationManager : MonoBehaviour
             RightWall(x, y, array);
     }
 
-    void TopWall(int x, int y, GenerationData[,] array)
+    private void TopWall(int x, int y, GenerationData[,] array)
     {
         GameObject prefab = array[x, y].biome.WallPrefab();
         PlaceObjectRotate(prefab, Vector3.zero, Vector3.zero, x, y);
     }
 
-
-    void BottomWall(int x, int y, GenerationData[,] array)
+    private void BottomWall(int x, int y, GenerationData[,] array)
     {
         GameObject prefab = array[x, y].biome.WallPrefab();
         Vector3 position = new Vector3(-1, 0, +1);
@@ -214,8 +213,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObjectRotate(prefab, position, rotation, x, y);
     }
 
-
-    void RightWall(int x, int y, GenerationData[,] array)
+    private void RightWall(int x, int y, GenerationData[,] array)
     {
         GameObject prefab = array[x, y].biome.WallPrefab();
         Vector3 position = new Vector3(-1, 0, 0);
@@ -223,7 +221,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObjectRotate(prefab, position, rotation, x, y);
     }
 
-    void LeftWall(int x, int y, GenerationData[,] array)
+    private void LeftWall(int x, int y, GenerationData[,] array)
     {
         GameObject prefab = array[x, y].biome.WallPrefab();
         Vector3 position = new Vector3(0, 0, 1);
@@ -231,7 +229,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObjectRotate(prefab, position, rotation, x, y);
     }
 
-    void GenerateOutsideCorners(int x, int y, GenerationData[,] array)
+    private void GenerateOutsideCorners(int x, int y, GenerationData[,] array)
     {
         TopLeftOutsideCorner(x, y, array);
         TopRightOutsideCorner(x, y, array);
@@ -239,7 +237,7 @@ public class GenerationManager : MonoBehaviour
         BottomRightOutsideCorner(x, y, array);
     }
 
-    void TopLeftOutsideCorner(int x, int y, GenerationData[,] array)
+    private void TopLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
         bool tileTransitionOne = false;
         if (!CheckTopWall(x, y, array))
@@ -278,7 +276,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void TopRightOutsideCorner(int x, int y, GenerationData[,] array)
+    private void TopRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
         bool tileTransitionOne = false;
         if (!CheckTopWall(x, y, array))
@@ -317,7 +315,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomLeftOutsideCorner(int x, int y, GenerationData[,] array)
+    private void BottomLeftOutsideCorner(int x, int y, GenerationData[,] array)
     {
         bool tileTransitionOne = false;
         if (!CheckBottomWall(x, y, array))
@@ -356,7 +354,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomRightOutsideCorner(int x, int y, GenerationData[,] array)
+    private void BottomRightOutsideCorner(int x, int y, GenerationData[,] array)
     {
         bool tileTransitionOne = false;
         if (!CheckBottomWall(x, y, array))
@@ -403,7 +401,7 @@ public class GenerationManager : MonoBehaviour
         BottomRightInsideCorner(x, y, array);
     }
 
-    void TopLeftInsideCorner(int x, int y, GenerationData[,] array)
+    private void TopLeftInsideCorner(int x, int y, GenerationData[,] array)
     {       
         if (CheckLeftWall(x, y, array))
             return;
@@ -411,18 +409,29 @@ public class GenerationManager : MonoBehaviour
         if (CheckTopWall(x, y, array))
             return;
 
-        bool tileTransitionOne = false;
-        if (!CheckTopWall(x - 1, y, array))                
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckLeftWall(x, y + 1, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckTopWall(x - 1, y, array);
+        bool tileTransitionTwo = CheckLeftWall(x, y + 1, array);
         Vector3 position;
         GameObject prefab;
 
         if (tileTransitionOne && tileTransitionTwo)
+        {
+            position = new Vector3(-0.925f, 0.5f, 0.925f);
+
+            if (array[x - 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x - 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y + 1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y + 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
+        }
+        else if (!tileTransitionOne && !tileTransitionTwo)
         {
             if (!array[x, y].biome.StopWallGeneration())
                 return;
@@ -439,30 +448,13 @@ public class GenerationManager : MonoBehaviour
             position = new Vector3(-1, 0.5f, 1);
             prefab = array[x, y].biome.BigColumnPrefab();
         }
-        else if (!tileTransitionOne && !tileTransitionTwo)
-        {
-            position = new Vector3(-0.925f, 0.5f, 0.925f);
-
-            if (array[x - 1, y].biome.StopWallGeneration())
-            {
-                prefab = array[x - 1, y].biome.BigColumnPrefab();
-            }
-            else if (array[x, y +1].biome.StopWallGeneration())
-            {
-                prefab = array[x, y + 1].biome.BigColumnPrefab();
-            }
-            else
-            {
-                prefab = array[x, y].biome.BigColumnPrefab();
-            }
-        }
         else
             return;       
         
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void TopRightInsideCorner(int x, int y, GenerationData[,] array)
+    private void TopRightInsideCorner(int x, int y, GenerationData[,] array)
     {
         if (CheckRightWall(x, y, array))
             return;
@@ -470,35 +462,12 @@ public class GenerationManager : MonoBehaviour
         if (CheckTopWall(x, y, array))
             return;
 
-        bool tileTransitionOne = false;
-        if (!CheckRightWall(x, y + 1, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckTopWall(x + 1, y, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckRightWall(x, y + 1, array);
+        bool tileTransitionTwo = CheckTopWall(x + 1, y, array);
         Vector3 position;
         GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
-        {
-            if (!array[x, y].biome.StopWallGeneration())
-                return;
-
-            if (array[x, y].biome != array[x + 1, y].biome)
-                return;
-
-            if (array[x, y].biome != array[x, y + 1].biome)
-                return;
-
-            if (array[x, y].biome == array[x + 1, y + 1].biome)
-                return;
-
-            position = new Vector3(0, 0.5f, 1);
-            prefab = array[x, y].biome.BigColumnPrefab();
-        }
-        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             position = new Vector3(-0.075f, 0.5f, 0.925f);
 
@@ -515,13 +484,30 @@ public class GenerationManager : MonoBehaviour
                 prefab = array[x, y].biome.BigColumnPrefab();
             }
         }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome != array[x + 1, y].biome)
+                return;
+
+            if (array[x, y].biome != array[x, y + 1].biome)
+                return;
+
+            if (array[x, y].biome == array[x + 1, y + 1].biome)
+                return;
+
+            position = new Vector3(0, 0.5f, 1);
+            prefab = array[x, y].biome.BigColumnPrefab();            
+        }
         else
             return;
 
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomLeftInsideCorner(int x, int y, GenerationData[,] array)
+    private void BottomLeftInsideCorner(int x, int y, GenerationData[,] array)
     {
         if (CheckBottomWall(x, y, array))
             return;
@@ -529,35 +515,12 @@ public class GenerationManager : MonoBehaviour
         if (CheckLeftWall(x, y, array))
             return;
 
-        bool tileTransitionOne = false;
-        if (!CheckBottomWall(x - 1, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckLeftWall(x, y - 1, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckBottomWall(x - 1, y, array);
+        bool tileTransitionTwo = CheckLeftWall(x, y - 1, array);
         Vector3 position;
         GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
-        {
-            if (!array[x, y].biome.StopWallGeneration())
-                return;
-
-            if (array[x, y].biome != array[x - 1, y].biome)
-                return;
-
-            if (array[x, y].biome != array[x, y - 1].biome)
-                return;
-
-            if (array[x, y].biome == array[x - 1, y - 1].biome)
-                return;
-
-            position = new Vector3(-1, 0.5f, 0);
-            prefab = array[x, y].biome.BigColumnPrefab();
-        }
-        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             position = new Vector3(-0.925f, 0.5f, 0.075f);
 
@@ -574,13 +537,30 @@ public class GenerationManager : MonoBehaviour
                 prefab = array[x, y].biome.BigColumnPrefab();
             }
         }
+        else if(!tileTransitionOne && !tileTransitionTwo)
+        {
+            if (!array[x, y].biome.StopWallGeneration())
+                return;
+
+            if (array[x, y].biome != array[x - 1, y].biome)
+                return;
+
+            if (array[x, y].biome != array[x, y - 1].biome)
+                return;
+
+            if (array[x, y].biome == array[x - 1, y - 1].biome)
+                return;
+
+            position = new Vector3(-1, 0.5f, 0);
+            prefab = array[x, y].biome.BigColumnPrefab();            
+        }
         else
             return;
 
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomRightInsideCorner(int x, int y, GenerationData[,] array)
+    private void BottomRightInsideCorner(int x, int y, GenerationData[,] array)
     {
         if (CheckRightWall(x, y, array))
             return;
@@ -588,18 +568,30 @@ public class GenerationManager : MonoBehaviour
         if (CheckBottomWall(x, y, array))
             return;
 
-        bool tileTransitionOne = false;
-        if (!CheckBottomWall(x + 1, y, array))
-            tileTransitionOne = true;
-
-        bool tileTransitionTwo = false;
-        if (!CheckRightWall(x, y - 1, array))
-            tileTransitionTwo = true;
-
+        bool tileTransitionOne = CheckBottomWall(x + 1, y, array);
+        bool tileTransitionTwo = CheckRightWall(x, y - 1, array);
         Vector3 position;
         GameObject prefab;
 
         if(tileTransitionOne && tileTransitionTwo)
+        {
+            if (array[x + 1, y].biome.StopWallGeneration())
+            {
+                prefab = array[x + 1, y].biome.BigColumnPrefab();
+            }
+            else if (array[x, y - 1].biome.StopWallGeneration())
+            {
+                prefab = array[x, y - 1].biome.BigColumnPrefab();
+            }
+            else
+            {
+                prefab = array[x, y].biome.BigColumnPrefab();
+            }
+
+            position = new Vector3(-0.075f, 0.5f, 0.075f);
+            
+        }
+        else if(!tileTransitionOne && !tileTransitionTwo)
         {
             if (!array[x, y].biome.StopWallGeneration())
                 return;
@@ -616,30 +608,13 @@ public class GenerationManager : MonoBehaviour
             position = new Vector3(0, 0.5f, 0);
             prefab = array[x, y].biome.BigColumnPrefab();
         }
-        else if(!tileTransitionOne && !tileTransitionTwo)
-        {
-            if (array[x + 1, y].biome.StopWallGeneration())
-            {
-                prefab = array[x + 1, y].biome.BigColumnPrefab();
-            }
-            else if (array[x, y - 1].biome.StopWallGeneration())
-            {
-                prefab = array[x, y - 1].biome.BigColumnPrefab();
-            }
-            else
-            {
-                prefab = array[x, y].biome.BigColumnPrefab();
-            }
-
-            position = new Vector3(-0.075f, 0.5f, 0.075f);
-        }
         else
             return;
 
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void GenerateWallSplits(int x, int y, GenerationData[,] array)
+    private void GenerateWallSplits(int x, int y, GenerationData[,] array)
     {
         if (!array[x, y].biome.StopWallGeneration())
             return;
@@ -654,7 +629,7 @@ public class GenerationManager : MonoBehaviour
         WestBottomWallSplit(x, y, array);
     }
 
-    void NorthRightWallSplit(int x, int y, GenerationData[,] array)
+    private void NorthRightWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckRightWall(x, y + 1, array))
             return;
@@ -683,7 +658,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void NorthLeftWallSplit(int x, int y, GenerationData[,] array)
+    private void NorthLeftWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckLeftWall(x, y + 1, array))
             return;
@@ -712,7 +687,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void SouthRightWallSplit(int x, int y, GenerationData[,] array)
+    private void SouthRightWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckRightWall(x, y - 1, array))
             return;
@@ -741,7 +716,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void SouthLeftWallSplit(int x, int y, GenerationData[,] array)
+    private void SouthLeftWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckLeftWall(x, y - 1, array))
             return;
@@ -770,7 +745,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void EastTopWallSplit(int x, int y, GenerationData[,] array)
+    private void EastTopWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckTopWall(x + 1, y, array))
             return;
@@ -799,7 +774,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void EastBottomWallSplit(int x, int y, GenerationData[,] array)
+    private void EastBottomWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckBottomWall(x + 1, y, array))
             return;
@@ -828,7 +803,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void WestTopWallSplit(int x, int y, GenerationData[,] array)
+    private void WestTopWallSplit(int x, int y, GenerationData[,] array)
     {
         if (!CheckTopWall(x - 1, y, array))
             return;
@@ -857,7 +832,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void WestBottomWallSplit(int x, int y, GenerationData[,] array)
+    private void WestBottomWallSplit(int x, int y, GenerationData[,] array)
     {       
         if (!CheckBottomWall(x - 1, y, array))
             return;
@@ -886,7 +861,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void GenerateColumns(int x, int y, GenerationData[,] array)
+    private void GenerateColumns(int x, int y, GenerationData[,] array)
     {
         TopLeftColumn(x, y, array);
         TopRightColumn(x, y, array);
@@ -894,7 +869,7 @@ public class GenerationManager : MonoBehaviour
         BottomLeftColumn(x, y, array);
     }
 
-    void TopLeftColumn(int x, int y, GenerationData[,] array)
+    private void TopLeftColumn(int x, int y, GenerationData[,] array)
     {
         if (!CheckSameBiome(x - 1, y, array, array[x, y].biome))
             return;
@@ -925,7 +900,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void TopRightColumn(int x, int y, GenerationData[,] array)
+    private void TopRightColumn(int x, int y, GenerationData[,] array)
     {
         if (!CheckSameBiome(x, y + 1, array, array[x, y].biome))
             return;
@@ -956,7 +931,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomRightColumn(int x, int y, GenerationData[,] array)
+    private void BottomRightColumn(int x, int y, GenerationData[,] array)
     {
         if (!CheckSameBiome(x + 1, y, array, array[x, y].biome))
             return;
@@ -987,7 +962,7 @@ public class GenerationManager : MonoBehaviour
         PlaceObject(prefab, position, x, y, true);
     }
 
-    void BottomLeftColumn(int x, int y, GenerationData[,] array)
+    private void BottomLeftColumn(int x, int y, GenerationData[,] array)
     {
         if (!CheckSameBiome(x, y - 1, array, array[x, y].biome))
             return;
